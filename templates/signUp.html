@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<form action="/signup/submit" method="POST">
+    <label>Enter First Name :</label>
+    <input type="text" name="fname"><br/>
+    <label>Enter Last Name :</label>
+    <input type="text" name="lname"><br/>
+    <label>Enter User Name :</label>
+    <input type="text" name="username"><br/>
+    <label>Enter Password :</label>
+    <input type="password" name="password"><br/>
+    <label>Enter email id :</label>
+    <input type="text" name="email"><br/>
+    <label>Enter Phone number :</label>
+    <input type="text" name="phone"><br/>
+    <button type="submit" name="submit">LogIn</button>
+    <button type="reset" name="reset">Reset</button>
+</form>
+{% endblock %}
