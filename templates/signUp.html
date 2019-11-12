@@ -1,20 +1,22 @@
 {% extends 'base.html' %}
 {% block title %}Sign Up{% endblock %}
+
 {% block content %}
-<form action="/signup/submit" method="POST">
+<form action="/api/v1/signup" method="POST">
     <label>Enter First Name :</label>
-    <input type="text" name="fname"><br/>
+    <input type="text" name="fname" id="fname"><br/>
     <label>Enter Last Name :</label>
-    <input type="text" name="lname"><br/>
+    <input type="text" name="lname" id="lname"><br/>
     <label>Enter User Name :</label>
-    <input type="text" name="username"><br/>
+    <input type="text" name="username" id="username"><br/>
     <label>Enter Password :</label>
-    <input type="password" name="password"><br/>
+    <input type="password" name="password" id="password"><br/>
     <label>Enter email id :</label>
-    <input type="text" name="email"><br/>
+    <input type="text" name="email" id="email"><br/>
     <label>Enter Phone number :</label>
-    <input type="text" name="phone"><br/>
-    <button type="submit" name="submit">LogIn</button>
+    <input type="text" name="phone" id="phone"><br/>
+    <button type="submit" name="submit" id='submit-new-user'>Submit</button>
     <button type="reset" name="reset">Reset</button>
 </form>
+<script type="text/javascript" src="static/js/signup_js.js"></script>
 {% endblock %}

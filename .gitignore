@@ -1,3 +1,4 @@
 env/
 *.pyc
 business_cards
+frontend/node_modules

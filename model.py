@@ -17,7 +17,6 @@ class User(db.Model):
                          unique = True,
                          nullable = False)
     password = db.Column(db.String(50),
-                         unique = True,
                          nullable = False)
     first_name = db.Column(db.String(30),
                            nullable =False)
@@ -115,7 +114,7 @@ class Email_info(db.Model):
 
 
 
-def connect_to_db():
+def connect_to_db(app):
     """ Connects to the database. """
     app.config["SQLALCHEMY_DATABASE_URI"] = "postgres:///bizCardBook"
     app.config["SQLALCHEMY_ECHO"] = True
@@ -126,5 +125,6 @@ def connect_to_db():
 
 if __name__ == "__main__":
     from server import app
-    connect_to_db()
-    db.create_all()
+    connect_to_db(app)
+    print("Connected to DB.")
+    # db.create_all()

@@ -5,7 +5,7 @@
 {% block content %}
 
 <div>
-    <form action="/login" method="POST">
+    <form action="/api/v1/login" method="POST">
         <label>Enter User Name :</label>
         <input type="text" name="username"><br/>
         <label>Enter Password :</label>
@@ -13,7 +13,7 @@
         <button type="submit" name="submit">LogIn</button>
         <button type="reset" name="reset">Reset</button>
     </form>
-    <form action="/signup">
+    <form action="/api/v1/su">
         <button type="submit">SignUp</button>
     </form>
     

@@ -8,7 +8,7 @@ import spacy
 tesseract_cmd = r'/usr/bin/tesseract'
 pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
 
-original_img = cv2.imread('business_cards/Reference/015.jpg')
+original_img = cv2.imread('business_cards/Reference/006.jpg')
 img = cv2.cvtColor(original_img,cv2.COLOR_BGR2GRAY)
 
 img = cv2.resize(img,None,fx=1.2,fy=1.2)
