@@ -4,6 +4,7 @@
   "description": "Card reading algo using machine learning and ",
   "main": "index.js",
   "license": "MIT",
+  "proxy": "http://10.10.10.61:5000",
   "scripts": {
     "start": "webpack-dev-server --host 0.0.0.0 --public 10.10.10.61:8080 --watch-poll",
     "build": "webpack --config webpack.config.js --mode production"
@@ -19,6 +20,7 @@
     "html-webpack-plugin": "^3.2.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
+    "react-popup": "^0.10.0",
     "react-router-dom": "^5.1.2",
     "style-loader": "^1.0.0",
     "webpack": "^4.41.2",

@@ -2,9 +2,7 @@ import React, { Component, useState } from 'react';
 import { Redirect } from 'react-router-dom'
 
 import './LoginComponent.scss'
-import {
-    Link
-  } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { userLogin } from '../../services/userService'
 
 export default class LoginComponent extends Component {
@@ -34,23 +32,33 @@ export default class LoginComponent extends Component {
         }   
     }
 
-    async onSubmit () {
+    async onSubmit (event) {
         const {username, password} = this.state
         const formData = {username, password}
+        if(formData.username == ""){
+            event.preventDefault()
+            alert("Please enter your username.")
+        }
+        if(formData.password == ""){
+            event.preventDefault()
+            alert("Please enter your password.")
+        }
         const response = await userLogin(formData)
         if(response && response.status === 200) { 
+            localStorage.setItem('cardUser', true);
+            localStorage.setItem('id', response.user_id)
             this.setState({redirect: true})
         } else {
-
+            event.preventDefault();
         }
     }
 
     render() {
         const { redirect, showError } = this.state
-        if(redirect) {
+        if(redirect || localStorage.getItem('cardUser')) {
             return <Redirect
             to={{
-              pathname: "/register"
+              pathname: "/userPage"
             }}
           />
         }
@@ -61,7 +69,7 @@ export default class LoginComponent extends Component {
                     <section className="login-form">
                     <input type="text" placeholder="username" value={this.state.username} onChange={(ev) => this.handleUserNameChange(ev)}/>
                     <input type="password" placeholder="password" value={this.state.password} onChange={(ev) => this.handlePasswordChange(ev)}/>
-                    <button onClick={() => this.onSubmit()}>login</button>
+                    <button onClick={(event) => this.onSubmit(event)}>login</button>
                     <p className="message">Not registered? <Link to='/register'>Create an account</Link></p>
                     </section>
                 </div>

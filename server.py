@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, session, flash
+from flask import Flask, redirect, render_template, request, session, flash, jsonify
 from model import db, User, Card, Company_info, Phone_info, Email_info,connect_to_db
 from flask_cors import CORS
 import json
@@ -8,9 +8,6 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "ABC"
 baseAPIurl = '/api/v1'
-@app.route(baseAPIurl)
-def homePage():
-    return render_template('homePage.html')
 
 
 @app.route(baseAPIurl  + '/login', methods = ['Post'])
@@ -18,20 +15,21 @@ def log_in():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
+
     user = User.query.filter_by(username=username).first()
     
-    if (user is None) or (user.password != password):
-        
-        return json.dumps({ "message": 'usename or password is wrong', "status": 400 }), 400
-    else:
-        
+    if user and user.password == password:
         session['id'] = user.user_id
-        
-    return json.dumps({ "message": 'successfully logged in.', "status": 200 }), 200
+        id = user.user_id
+        print(session['id'])
+            
+        res = jsonify({"user_id":id, "message": 'successfully logged in.', "status": 200 })
 
-@app.route(baseAPIurl+'/su')
-def signup():
-    return render_template('signUp.html')
+        return res
+
+    return jsonify({ "message": 'usename or password is wrong', "status": 400 })
+        
+    
 
 
 @app.route(baseAPIurl+'/signup', methods = ['Post'])
@@ -54,27 +52,25 @@ def new_user():
                             email_id=email,
                             phone_number=phone))
         db.session.commit()
-        return json.dumps({ "message": 'successfully logged in.', "status": 200 }), 200
+        return json.dumps({ "message": 'user successfully added.', "status": 200 }), 200
 
     else:
-        return json.dumps({ "message": 'not successfully logged in.', "status": 500 }), 200
+        return json.dumps({ "message": 'user is not successfully added.', "status": 500 }), 500
 
+@app.route(baseAPIurl+'/getCardData/<id>', methods = ['Get'])
+def get_cards(id):
+   
+    cards = Card.query.filter(Card.user_id==id).all()
+    print(cards)
+    if cards is not None:
+        card_info = []
+        for card in cards:
+            card_info.append({"id":card.card_id, "name":card.first_name+" "+card.last_name})
 
+        return jsonify({"cards":card_info, "message":"successfully fetched all cards.","status":200})
+    else:
+        return jsonify({"message":"There is no card record stored by this user.","status":500})
 
-@app.route(baseAPIurl + '/isavailable')
-def is_available():
-    username = request.args.get('userName')
-    email = request.args.get('emailId')
-    return json.dumps({ "error": 'Not able to find the username', "status": 500 }), 500
-    # user = User.query.filter(User.username == username | User.email_id == email)
-    # if user is not None:
-    #     if user.username is username:
-    #         return 'usename'
-    #     else:
-    #         return 'email'
-    # else:
-    #     return False
-    # return user != None
 
 
 if __name__ == "__main__":

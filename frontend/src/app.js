@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 import LoginComponent from './components/LoginComponent/LoginComponent'
 import RegistrationComponent from './components/RegistrationComponent/RegistrationComponent'
-import NotFoundComponent from './components/NotFoundComponent/NotFoundComponent'
+import UserPageComponent from './components/UserPageComponent/UserPageComponent'
 import './App.scss'
 
 const App = () => (
@@ -15,7 +15,7 @@ const App = () => (
           <Route exact path='/' component={LoginComponent}></Route>
           <Route exact path='/login' component={LoginComponent}></Route>
           <Route exact path='/register' component={RegistrationComponent}></Route>
-          <Route component={NotFoundComponent}></Route>
+          <Route exact path='/userPage' component={UserPageComponent}></Route>
         </Switch>
       </Router>
 )
