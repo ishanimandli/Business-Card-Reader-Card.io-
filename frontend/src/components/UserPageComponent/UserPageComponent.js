@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { getCardData } from '../../services/userService'
+import { getCardData,cardFromCompany } from '../../services/userService'
 import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
-import { Popup } from 'react-popup'
+
 
 
 export default class UserPageComponent extends Component{
@@ -13,19 +13,29 @@ export default class UserPageComponent extends Component{
 			listOfcards: [],
 			logoutFlage: false,
 			recordSelected: false,
-			searchName: ""
+			searchName: "",	
+			company_list: [],
+			clickedProfile: false
 		}
-	}
 
+	}
+	
 	componentDidMount() {
 		this.fetchAllCards()
+		let originalCardList = []
 	}
 
 	async fetchAllCards() {
 		const response = await getCardData(localStorage.getItem('id'))
+		// console.log(response)
 		if(response.status === 200){
 			
-			this.setState({listOfcards: response.data})
+			this.setState({
+				listOfcards: response.data,
+				company_list: response.company_list
+			})
+			// console.log(response.company_list)
+			this.originalCardList = this.state.listOfcards
 		} else {
 			this.setState({listOfcards: []})
 		}
@@ -37,9 +47,7 @@ export default class UserPageComponent extends Component{
 			{listOfcards && listOfcards.length > 0 && 
 			<div>
 				{listOfcards.map(data => {
-					console.log(data.id)
-					console.log(data.name)
-					 return <label key={data.id} onClick={(evt) => {this.handleRecordClick(evt)}}>{data.name}</label>
+					 return <div key={data.id} onClick={(evt) => {this.handleRecordClick(evt)}}>{data.name}</div>
 				})}
 			</div>}
 			{listOfcards && listOfcards.length === 0 && <div>No Cards available</div>}
@@ -50,8 +58,9 @@ export default class UserPageComponent extends Component{
 			this.setState({
 				recordSelected: true
 			})
+			}
 		}
-	}
+	
 	handleLogoutClick(evt){
 		if(evt){
 			localStorage.removeItem('id');
@@ -61,31 +70,93 @@ export default class UserPageComponent extends Component{
 	}
 	handleSearchNameChange(evt){
 		if(evt){
+			this.setState({originalCardList:this.state.listOfcards})
 			this.setState({
 				searchName: evt.target.value
 			})
+			let currentList = [];
+        	// Variable to hold the filtered list before putting into state
+   			 let newList = [];
+
+        	// If the search bar isn't empty
+    		if (this.state.searchName !== "") {
+            	// Assign the original list to currentList
+      			currentList = this.originalCardList;
+
+            	// Use .filter() to determine which items should be displayed
+            	// based on the search terms
+      			newList = currentList.filter(item => {
+                			// change current item to lowercase
+        					const lc = item.name.toLowerCase();
+               				// change search term to lowercase
+        					const filter = this.state.searchName.toLowerCase();
+                			// check to see if the current list item includes the search term
+                			// If it does, it will be added to newList. Using lowercase eliminates
+                			// issues with capitalization in search terms and search content
+        				return lc.includes(filter);
+      					});
+			} 
+			else {
+            	// If the search bar is empty, set newList to original task list
+      			newList = this.originalCardList;
+    		}
+        	// Set the filtered state based on what our rules added to newList
+    		this.setState({
+      			listOfcards: newList
+    		});
 		}
 	}
+	handleCancleClick(evt){
+		if(evt){
+			this.setState({
+				listOfcards: this.originalCardList,
+				searchName: ""
+				
+			})
+		}
+	}
+	async handleSelectedValue(evt){
+		if(evt){
+			if(evt.target.value != 'null'){
+				const response = await cardFromCompany(evt.target.value,localStorage.getItem('id'))
+				this.setState({
+					listOfcards: response.searchData
+				})
+			}
+		}
+	}
+
+	showCompanyList(){
+		const companies = this.state.company_list
+		// console.log(companies)
+		return (
+		<div>
+			<select onChange={(evt) => {this.handleSelectedValue(evt)}}>
+				<option key='None' value='null'></option>
+				{companies && companies.length > 0 &&
+				companies.map(company => {
+					return <option key={company} value={company}>{company}</option>
+				}) }
+			</select>
+		</div>)
+	}
+	
 	render(){
 		if(this.state.logoutFlage){
 			return <Redirect to = "/" />
 		}
+		if(this.state.clickedProfile){
+			return <Redirect to = "/userProfile" />
+		}
 		return (<div>
+					<div><a onClick={(evt) => {this.setState({clickedProfile:true})}}>Your Profile</a></div>
 					<div><button onClick={(evt) => this.handleLogoutClick(evt)}>Logout</button></div>
-					
+					<input type='text' value={this.state.searchName} onChange={(evt) => this.handleSearchNameChange(evt)} ></input>
+					<button onClick={(evt) => {this.handleCancleClick(evt)}}>Cancle</button>
+					{this.showCompanyList()}
 					<h1>Names</h1>
 					{this.showCardData()}
-					<Popup
-          				open={this.state.recordSelected}
-          				closeOnDocumentClick
-          				onClose={(evt) => {this.setState({recordSelected: false})}}>
-          				<div className="modal">
-          					  <a className="close" onClick={(evt) => {this.setState({recordSelected: false})}}>
-             					 &times;
-           					 </a>
-          						 Hello.............!!!!!!!!!
-         				</div>
-        			</Popup>
+					
 				</div>)
 	}
 	

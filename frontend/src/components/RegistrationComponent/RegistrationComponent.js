@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import { userSignup } from '../../services/userService'
+import { Redirect } from 'react-router-dom'
 
 export default class RegistrationComponent extends Component {
     constructor(props){
@@ -11,7 +12,8 @@ export default class RegistrationComponent extends Component {
             username: "",
             password: "",
             email: "",
-            phone: ""
+            phone: "",
+            signedup: false
         }
     }
     
@@ -98,6 +100,9 @@ export default class RegistrationComponent extends Component {
         console.log(response)
     }
     render() {
+        if(this.state.signedup){
+            return <Redirect to = "/" />
+        }
         return(
             <div className="login-page">
                 <div className="form">
@@ -110,7 +115,6 @@ export default class RegistrationComponent extends Component {
                     <input type="text" placeholder="email address" value={this.state.email} onChange={(event) => this.handleEmailChange(event)}/>
                     <input type="text" placeholder="phone number" value={this.state.phone} onChange={(event) => this.handlePhoneNumberChange(event)}/>
                     <button onClick={(event) => this.onCreate(event)}>create</button>
-                    <p className="message">Already registered? <Link to="/login">Sign In</Link></p>
                     </form>
                 </div>
                 </div>

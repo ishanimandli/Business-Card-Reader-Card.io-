@@ -29,8 +29,6 @@ def log_in():
 
     return jsonify({ "message": 'usename or password is wrong', "status": 400 })
         
-    
-
 
 @app.route(baseAPIurl+'/signup', methods = ['Post'])
 def new_user():
@@ -61,15 +59,55 @@ def new_user():
 def get_cards(id):
    
     cards = Card.query.filter(Card.user_id==id).all()
+    
     print(cards)
     if cards is not None:
         card_info = []
+        company_set=set()
         for card in cards:
+            company_set.add(card.company.company_name)
             card_info.append({"id":card.card_id, "name":card.first_name+" "+card.last_name})
-
-        return jsonify({"cards":card_info, "message":"successfully fetched all cards.","status":200})
+        return jsonify({"cards":card_info,"comapny_list":list(company_set), "message":"successfully fetched all cards.","status":200})
     else:
         return jsonify({"message":"There is no card record stored by this user.","status":500})
+
+
+@app.route(baseAPIurl+'/searchByCompany/<id>/<companyName>')
+def search_By_Name(id,companyName):
+    company = Company_info.query.filter(Company_info.company_name == companyName).first()
+    print(company)
+    cards = Card.query.filter(Card.company_id==company.company_id, Card.user_id==id).all()
+    card_info = []
+    for card in cards:
+        card_info.append({"id":card.card_id, "name":card.first_name+" "+card.last_name})
+    return jsonify({"cards":card_info,"message":"successfully fetched all cards.","status":200})
+
+
+@app.route(baseAPIurl+'/userProfile/<id>')
+def user_profile(id):
+    user = User.query.get(id)
+    return jsonify({"info":{"fname":user.first_name, "lname":user.last_name,"phone":user.phone_number,"email":user.email_id}, "status": 200})
+
+
+@app.route(baseAPIurl+'/setUserProfile', methods = ['Post'])
+def set_User_Profile():
+    profile = request.get_json()
+    user_id = profile.get('id')
+    fname = profile.get('fname')
+    lname = profile.get('lname')
+    phone = profile.get('phone')
+    email = profile.get('email')
+
+    user = User.query.get(user_id)
+    user.first_name = fname
+    user.last_name = lname
+    user.email_id = email
+    user.phone_number = phone
+
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({"message": "Successfully updated.", "status": 200})
 
 
 
