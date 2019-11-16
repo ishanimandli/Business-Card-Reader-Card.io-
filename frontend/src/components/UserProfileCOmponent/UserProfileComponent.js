@@ -30,6 +30,7 @@ export default class Profile extends Component{
     handleEmailChange(evt){
         if(evt){
             this.setState({
+                email: evt.target.value,
                 contentChanged: true
             })
         }
@@ -37,6 +38,7 @@ export default class Profile extends Component{
     handleFirstNameChange(evt){
         if(evt){
             this.setState({
+                fname: evt.target.value,
                 contentChanged: true
             })
         }
@@ -44,6 +46,7 @@ export default class Profile extends Component{
     handleLastNameChange(evt){
         if(evt){
             this.setState({
+                lname: evt.target.value,
                 contentChanged: true
             })
         }
@@ -51,6 +54,7 @@ export default class Profile extends Component{
     handlePhoneChange(evt){
         if(evt){
             this.setState({
+                phone: evt.target.value,
                 contentChanged: true
             })
         }
@@ -90,12 +94,6 @@ export default class Profile extends Component{
             alert('Enter your email.')
             flag = false
         }
-        else{
-            if(!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(formData.email))){
-                alert("Please enter valid email id.")
-                flag = false
-            }
-        }
         if(formData.phone == "")
         {
             alert('Please enter your phone number.')
@@ -113,9 +111,9 @@ export default class Profile extends Component{
                     <label>Phone number:</label>
                     <input type='text' value={this.state.phone} onChange={(evt) =>{this.handlePhoneChange(evt)}}></input><br/>
                     <label>Email id:</label>
-                    <input type='text' value={this.state.email} onChange={(evt) =>{this.handleEmailChange(evt)}}></input><br/>
+                    <input type='email' value={this.state.email} onChange={(evt) =>{this.handleEmailChange(evt)}}></input><br/>
                     <p>Do you want to <a>change password</a>?</p>
-                    <button disabled = {this.state.contentChanged} onClick = {(evt) => {this.handleSaveProfile(evt)}}>Save Cahnges</button>
+                    <button disabled = {!this.state.contentChanged} onClick = {(evt) => {this.handleSaveProfile(evt)}}>Save Cahnges</button>
                 </form>
             </div>
         )

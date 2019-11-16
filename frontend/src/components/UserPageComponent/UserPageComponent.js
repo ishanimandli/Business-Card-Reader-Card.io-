@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { getCardData,cardFromCompany } from '../../services/userService'
 import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
+import ReactModal from 'react-modal'
 
 
 
@@ -15,7 +16,8 @@ export default class UserPageComponent extends Component{
 			recordSelected: false,
 			searchName: "",	
 			company_list: [],
-			clickedProfile: false
+			clickedProfile: false,
+			showModal: false
 		}
 
 	}
@@ -56,7 +58,7 @@ export default class UserPageComponent extends Component{
 	handleRecordClick(evt){
 		if(evt){
 			this.setState({
-				recordSelected: true
+				showModal: true
 			})
 			}
 		}
@@ -140,6 +142,11 @@ export default class UserPageComponent extends Component{
 			</select>
 		</div>)
 	}
+	handleCloseModal () {
+		this.setState({
+			showModal: false
+		})
+	}
 	
 	render(){
 		if(this.state.logoutFlage){
@@ -151,12 +158,19 @@ export default class UserPageComponent extends Component{
 		return (<div>
 					<div><a onClick={(evt) => {this.setState({clickedProfile:true})}}>Your Profile</a></div>
 					<div><button onClick={(evt) => this.handleLogoutClick(evt)}>Logout</button></div>
+					<div>
+						<input type="file" name ="myFile"></input><button>Scan</button>
+					</div>
 					<input type='text' value={this.state.searchName} onChange={(evt) => this.handleSearchNameChange(evt)} ></input>
 					<button onClick={(evt) => {this.handleCancleClick(evt)}}>Cancle</button>
 					{this.showCompanyList()}
 					<h1>Names</h1>
 					{this.showCardData()}
-					
+					<ReactModal 
+						isOpen={this.state.showModal}
+						contentLabel="Minimal Modal Example">
+							<button onClick={this.handleCloseModal}>Close Modal</button>
+					</ReactModal>
 				</div>)
 	}
 	
