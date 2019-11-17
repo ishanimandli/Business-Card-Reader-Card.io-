@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { getCardData,cardFromCompany } from '../../services/userService'
 import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
-import ReactModal from 'react-modal'
+
+import CardModal from '../CardModalComponent/CardModalComponent.js'
 
 
 
@@ -17,9 +18,9 @@ export default class UserPageComponent extends Component{
 			searchName: "",	
 			company_list: [],
 			clickedProfile: false,
-			showModal: false
+			showModal: false,
+			cardId: ""
 		}
-
 	}
 	
 	componentDidMount() {
@@ -49,18 +50,22 @@ export default class UserPageComponent extends Component{
 			{listOfcards && listOfcards.length > 0 && 
 			<div>
 				{listOfcards.map(data => {
-					 return <div key={data.id} onClick={(evt) => {this.handleRecordClick(evt)}}>{data.name}</div>
+					const cid = data.id
+					 return <div key={data.id} onClick={(evt) => this.handleRecordClick(evt,cid)}>{data.name}</div>
 				})}
 			</div>}
 			{listOfcards && listOfcards.length === 0 && <div>No Cards available</div>}
 		</section>)
 	}
-	handleRecordClick(evt){
+	handleRecordClick(evt,cid){
 		if(evt){
+			console.log('CLicked')
 			this.setState({
-				showModal: true
+				showModal: true,
+				cardId: cid
 			})
 			}
+			console.log(this.state.cardId)
 		}
 	
 	handleLogoutClick(evt){
@@ -142,12 +147,12 @@ export default class UserPageComponent extends Component{
 			</select>
 		</div>)
 	}
-	handleCloseModal () {
+	
+	handleCloseModal(){
 		this.setState({
-			showModal: false
+			showModal: false,
 		})
 	}
-	
 	render(){
 		if(this.state.logoutFlage){
 			return <Redirect to = "/" />
@@ -166,11 +171,7 @@ export default class UserPageComponent extends Component{
 					{this.showCompanyList()}
 					<h1>Names</h1>
 					{this.showCardData()}
-					<ReactModal 
-						isOpen={this.state.showModal}
-						contentLabel="Minimal Modal Example">
-							<button onClick={this.handleCloseModal}>Close Modal</button>
-					</ReactModal>
+					{this.state.showModal && <CardModal card_id={this.state.cardId} showCardModal={this.state.showModal} onCloseModal={this.handleCloseModal}/>}
 				</div>)
 	}
 	

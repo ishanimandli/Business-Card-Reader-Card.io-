@@ -43,3 +43,9 @@ export async function setUserProfile(formData){
     const response = await axios.post(PATH,formData)
     return {status: response.data.status}
 }
+
+export async function getCard(card_id){
+    const PATH = baseUrl + '/showCardData/'
+    const response = await axios.get(PATH + card_id)
+    return {cardData: response.data.cardData, message: response.data.message, status: response.data.status}
+}

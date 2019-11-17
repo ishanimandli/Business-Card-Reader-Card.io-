@@ -110,6 +110,29 @@ def set_User_Profile():
     return jsonify({"message": "Successfully updated.", "status": 200})
 
 
+@app.route(baseAPIurl+'/showCardData/<card_id>')
+def show_card(card_id):
+    card = Card.query.get(card_id)
+    print(card)
+    phones = Phone_info.query.filter(Phone_info.card_id==card_id).all()
+    emails = Email_info.query.filter(Email_info.card_id==card_id).all()
+    phone_list = []
+    email_list = []
+    for phone in phones:
+        phone_list.append(phone.phone_number)
+    for email in emails:
+        email_list.append(email.email_id)
+    return jsonify({"cardData":{"fname":card.first_name,
+                                 "lname":card.last_name,
+                                 "jobTitle":card.job_title,
+                                 "company":card.company.company_name,
+                                 "phones":phone_list,
+                                 "emails":email_list,
+                                 "description":card.discription},
+                    "message": "Successfully fetched",
+                    "status": 200})
+
+
 
 if __name__ == "__main__":
     connect_to_db(app)
