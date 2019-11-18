@@ -49,3 +49,15 @@ export async function getCard(card_id){
     const response = await axios.get(PATH + card_id)
     return {cardData: response.data.cardData, message: response.data.message, status: response.data.status}
 }
+
+export async function updateCard(formData){
+    const PATH = baseUrl + '/updateCard'
+    const response = await axios.post(PATH, formData)
+    return {message: response.data.message, status: response.data.status}
+}
+
+export async function deleteCard(formData){
+    const PATH = baseUrl + '/deleteCard'
+    const response = await axios.post(PATH, formData)
+    return {message: response.data.message, status: response.data.status}
+}

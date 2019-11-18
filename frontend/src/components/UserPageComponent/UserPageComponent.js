@@ -21,6 +21,7 @@ export default class UserPageComponent extends Component{
 			showModal: false,
 			cardId: ""
 		}
+		this.handleCloseModal = this.handleCloseModal.bind(this)
 	}
 	
 	componentDidMount() {
@@ -152,6 +153,8 @@ export default class UserPageComponent extends Component{
 		this.setState({
 			showModal: false,
 		})
+		this.fetchAllCards()
+		// console.log(this.state.showModal)
 	}
 	render(){
 		if(this.state.logoutFlage){

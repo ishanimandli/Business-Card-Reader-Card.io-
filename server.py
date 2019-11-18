@@ -97,7 +97,7 @@ def set_User_Profile():
     lname = profile.get('lname')
     phone = profile.get('phone')
     email = profile.get('email')
-
+    
     user = User.query.get(user_id)
     user.first_name = fname
     user.last_name = lname
@@ -119,9 +119,9 @@ def show_card(card_id):
     phone_list = []
     email_list = []
     for phone in phones:
-        phone_list.append(phone.phone_number)
+        phone_list.append({"phone_id":phone.id, "phone_num":phone.phone_number})
     for email in emails:
-        email_list.append(email.email_id)
+        email_list.append({"id":email.id, "email_id":email.email_id})
     return jsonify({"cardData":{"fname":card.first_name,
                                  "lname":card.last_name,
                                  "jobTitle":card.job_title,
@@ -132,6 +132,70 @@ def show_card(card_id):
                     "message": "Successfully fetched",
                     "status": 200})
 
+
+@app.route(baseAPIurl+'/updateCard', methods = ['Post'])
+def update_card():
+    card_data = request.get_json()
+    card_id = card_data.get('card_id')
+    fname = card_data.get('fname')
+    lname = card_data.get('lname')
+    emails = card_data.get('emails')
+    phones = card_data.get('phones')
+    jobTitle = card_data.get('jobTitle')
+    company = card_data.get('companyName')
+    discription = card_data.get('description')
+
+    card = Card.query.get(card_id)
+    company_obj = Company_info.query.filter(Company_info.company_name == company).first()
+    phone_obj = card.phone
+    email_obj = card.email
+
+    if company_obj is None:
+        db.session.add(card.card_id,company)
+
+    card.first_name = fname
+    card.last_name = lname
+    card.job_title = jobTitle
+    card.discription = discription
+    card.company_id = company_obj.company_id
+
+    db.session.add(card)
+    db.session.commit()
+
+    for phone in phones:
+        print('--------------------------'+str(phone['phone_id']))
+        phone_obj = Phone_info.query.get(phone['phone_id'])
+        phone_obj.phone_number = phone['phone_num']
+        db.session.add(phone_obj)
+        db.session.commit()
+
+    for email in emails:
+        email_obj = Email_info.query.get(email['id'])
+        email_obj.email_id = email['email_id']
+        db.session.add(email_obj)
+        db.session.commit()
+
+    return jsonify({"message":"Successfully updated", "status": 200})
+
+@app.route(baseAPIurl+'/deleteCard', methods = ['Post'])
+def delete_Card():
+    formData = request.get_json()
+    card_id = formData.get('card_id')
+    card = Card.query.get(card_id)
+    company_id = card.company_id
+    phones = card.phone
+    for phone in phones:
+        db.session.delete(phone)
+        db.session.commit()
+    db.session.delete(card)
+    db.session.commit()
+    cards = Card.query.filter(Card.company_id == company_id).all()
+    if cards is None:
+        company = Company_info.query.get(company_id)
+        db.session.delete(company)
+        db.session.commit()
+
+    return jsonify({"message": "Card is successfully deleted.","status": 200})
 
 
 if __name__ == "__main__":

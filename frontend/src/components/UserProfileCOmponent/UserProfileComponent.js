@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { getUserProfile,setUserProfile } from '../../services/userService'
 import { Link } from 'react-router-dom'
+import ReactModal from 'react-modal'
 
 export default class Profile extends Component{
     constructor(props){
@@ -10,7 +11,11 @@ export default class Profile extends Component{
             lname: "",
             phone: "",
             email: "",
-            contentChanged: false
+            contentChanged: false,
+            username: "",
+            oldPassword: "",
+            newPassword: "",
+            openModal: false
         }
     }
     
@@ -101,6 +106,11 @@ export default class Profile extends Component{
         }
         return flag
     }
+    handleChangePassword(){
+        this.setState({
+            openModal: true
+        })
+    }
     render(){
         return (
             <div>
@@ -112,9 +122,21 @@ export default class Profile extends Component{
                     <input type='text' value={this.state.phone} onChange={(evt) =>{this.handlePhoneChange(evt)}}></input><br/>
                     <label>Email id:</label>
                     <input type='email' value={this.state.email} onChange={(evt) =>{this.handleEmailChange(evt)}}></input><br/>
-                    <p>Do you want to <a>change password</a>?</p>
+                    <p>Do you want to <a onClick={this.handleChangePassword}>change password</a>?</p>
                     <button disabled = {!this.state.contentChanged} onClick = {(evt) => {this.handleSaveProfile(evt)}}>Save Cahnges</button>
                 </form>
+                <ReactModal
+                    isOpen={this.state.openModal}>
+                    <form>
+                        <p>User name</p>
+                        <input type="text" value={this.state.username} onChange={(evt) => this.handleUsernameChange(evt)}></input><br/>
+                        <p>Old password</p>
+                        <input type="text" value={this.state.oldPassword} onChange={(evt) => this.handleOldPasswordChange(evt)}></input><br/>
+                        <p>New password</p>
+                        <input type="text" value={this.state.newPassword} onChange={(evt) => this.handleNewPasswordChange(evt)}></input><br/>
+                        <button onClick={this.handleUpdatePassword}>Update password</button>
+                    </form>
+                </ReactModal>
             </div>
         )
     }
