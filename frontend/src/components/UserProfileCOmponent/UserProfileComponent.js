@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getUserProfile,setUserProfile } from '../../services/userService'
+import { getUserProfile,setUserProfile,updatePassword } from '../../services/userService'
 import { Link } from 'react-router-dom'
 import ReactModal from 'react-modal'
 
@@ -15,8 +15,10 @@ export default class Profile extends Component{
             username: "",
             oldPassword: "",
             newPassword: "",
-            openModal: false
+            openPasswordModal: false
         }
+        this.handleChangePassword = this.handleChangePassword.bind(this)
+        // this.handleUpdatePassword = this.handleUpdatePassword.bind(this)
     }
     
     componentDidMount(){
@@ -108,9 +110,54 @@ export default class Profile extends Component{
     }
     handleChangePassword(){
         this.setState({
-            openModal: true
+            openPasswordModal: true
         })
     }
+    handleUsernameChange(evt){
+        if(evt){
+            this.setState({
+                username: evt.target.value
+            })
+        }
+    }
+    handleOldPasswordChange(evt){
+        if(evt){
+            this.setState({
+                oldPassword: evt.target.value
+            })
+        }
+    }
+    handleNewPasswordChange(evt){
+        if(evt){
+            this.setState({
+                newPassword: evt.target.value
+            })
+        }
+    }
+    async handleUpdatePassword(evt){
+        const { username,oldPassword,newPassword } = this.state
+        const response = await updatePassword({ username,oldPassword,newPassword })
+        console.log(response)
+        if(response.status == 200){
+            this.setState({
+                openPasswordModal: false,
+                username: "",
+                oldPassword: "",
+                newPassword: ""
+            })
+        }
+        else{
+            evt.preventDefault()
+            alert(response.message)
+            this.setState({
+                openPasswordModal: true,
+                username: "",
+                oldPassword: "",
+                newPassword: ""
+            })
+            
+        }
+    }    
     render(){
         return (
             <div>
@@ -126,16 +173,16 @@ export default class Profile extends Component{
                     <button disabled = {!this.state.contentChanged} onClick = {(evt) => {this.handleSaveProfile(evt)}}>Save Cahnges</button>
                 </form>
                 <ReactModal
-                    isOpen={this.state.openModal}>
-                    <form>
+                    isOpen={this.state.openPasswordModal}>
+                    
                         <p>User name</p>
                         <input type="text" value={this.state.username} onChange={(evt) => this.handleUsernameChange(evt)}></input><br/>
                         <p>Old password</p>
                         <input type="text" value={this.state.oldPassword} onChange={(evt) => this.handleOldPasswordChange(evt)}></input><br/>
                         <p>New password</p>
                         <input type="text" value={this.state.newPassword} onChange={(evt) => this.handleNewPasswordChange(evt)}></input><br/>
-                        <button onClick={this.handleUpdatePassword}>Update password</button>
-                    </form>
+                        <button onClick={(evt) => {this.handleUpdatePassword(evt)}}>Update password</button>
+                   
                 </ReactModal>
             </div>
         )

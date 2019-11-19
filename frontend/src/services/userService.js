@@ -61,3 +61,9 @@ export async function deleteCard(formData){
     const response = await axios.post(PATH, formData)
     return {message: response.data.message, status: response.data.status}
 }
+
+export async function updatePassword(formData){
+    const PATH = baseUrl + '/updatePassword'
+    const response = await axios.post(PATH, formData)
+    return {message: response.data.message, status: response.data.status}
+}

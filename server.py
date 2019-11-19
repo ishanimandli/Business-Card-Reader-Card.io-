@@ -198,6 +198,23 @@ def delete_Card():
     return jsonify({"message": "Card is successfully deleted.","status": 200})
 
 
+@app.route(baseAPIurl+'/updatePassword', methods = ['Post'])
+def update_password():
+    update_details = request.get_json()
+    username = update_details.get('username')
+    old_password = update_details.get('oldPassword')
+    new_password = update_details.get('newPassword')
+    user = User.query.filter(User.username == username).first()
+    if user is None:
+        return jsonify({"message": "Invalid username or password", "status": 4011})
+    elif user.password != old_password:
+        return jsonify({"message": "Invalid username or password", "status": 401})
+    else:
+        user.password = new_password
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({"message": "Password is successfully updated.", "status": 200})
+
 if __name__ == "__main__":
     connect_to_db(app)
     app.run(debug=True, host='0.0.0.0')
