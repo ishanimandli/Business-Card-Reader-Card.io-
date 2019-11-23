@@ -25,7 +25,10 @@ export default class Profile extends Component{
         this.showUserProfile();
     }
     async showUserProfile(){
-        const response = await getUserProfile(localStorage.getItem('id'))
+        const response = await getUserProfile()
+        if(response.status == 403){
+			window.location.href='/'
+		}
         console.log(response.info)
         this.setState({
             fname: response.info.fname,
@@ -70,12 +73,14 @@ export default class Profile extends Component{
         if(evt){
             evt.preventDefault()
             const { fname,lname,email,phone } = this.state
-            const id = localStorage.getItem('id')
             const formData = {fname,lname,email,phone,id}
 
             const flag = this.validateFormData(formData)
             if(flag){
                 const response = await setUserProfile(formData)
+                if(response.status == 403){
+                    window.location.href='/'
+                }
                 if(response.status == 200){
                     this.setState({
                         contentChanged: false

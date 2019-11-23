@@ -14,8 +14,8 @@ export default class LoginComponent extends Component {
             password: '',
             redirect: false
         }
+        localStorage.clear()
     }
-
     handleUserNameChange (ev) {
         if(ev) {
             this.setState({
@@ -44,9 +44,9 @@ export default class LoginComponent extends Component {
             alert("Please enter your password.")
         }
         const response = await userLogin(formData)
+    
         if(response && response.status === 200) { 
-            localStorage.setItem('cardUser', true);
-            localStorage.setItem('id', response.user_id)
+            localStorage.setItem('token', response.data.token);
             this.setState({redirect: true})
         } else {
             event.preventDefault();

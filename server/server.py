@@ -2,15 +2,46 @@ from flask import Flask, redirect, render_template, request, session, flash, jso
 from model import db, User, Card, Company_info, Phone_info, Email_info,connect_to_db
 from flask_cors import CORS
 import json
-
+import jwt
+import datetime
+from functools import wraps
 
 app = Flask(__name__)
 CORS(app)
-app.secret_key = "ABC"
-baseAPIurl = '/api/v1'
+app.secret_key = "thisisasecretkey"
 
 
-@app.route(baseAPIurl  + '/login', methods = ['Post'])
+
+# TO DO: remember to update code
+base_api_url = '/api/v1'
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        print('------------------------',request)
+        token = request.headers['Authorization']
+        if 'Bearer' in token:
+            #  Remove Bearer from string
+            token = token[7:]
+        if not token:
+            return jsonify({'message': 'Token is missing','status': 403})
+        try:
+            data = jwt.decode(token, app.secret_key)
+        except:
+            return jsonify({'message':'Invalid token!','status': 403})
+
+        return f(*args,**kwargs)
+    return decorated
+
+
+def get_user_id():
+    token = request.headers['Authorization']
+    token = token[7:]
+    data = jwt.decode(token,app.secret_key)
+    return data['user_id']
+
+
+@app.route(f'{base_api_url}/login', methods = ['Post'])
 def log_in():
     data = request.get_json()
     username = data.get('username')
@@ -19,18 +50,19 @@ def log_in():
     user = User.query.filter_by(username=username).first()
     
     if user and user.password == password:
-        session['id'] = user.user_id
-        id = user.user_id
-        print(session['id'])
-            
-        res = jsonify({"user_id":id, "message": 'successfully logged in.', "status": 200 })
+        token = jwt.encode({'user_id':user.user_id, 
+                            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes = 60)},
+                            app.secret_key)    
+        res = jsonify({"token": token.decode('UTF-8'),
+                       "message": 'successfully logged in.', 
+                       "status": 200 })
 
         return res
 
     return jsonify({ "message": 'usename or password is wrong', "status": 400 })
         
 
-@app.route(baseAPIurl+'/signup', methods = ['Post'])
+@app.route(f'{base_api_url}/signup', methods = ['Post'])
 def new_user():
     data = request.get_json()
     fname = data.get('fname')
@@ -50,15 +82,18 @@ def new_user():
                             email_id=email,
                             phone_number=phone))
         db.session.commit()
-        return json.dumps({ "message": 'user successfully added.', "status": 200 }), 200
+        # TO DO: jsonify
+        return jsonify({ "message": 'user successfully added.', "status": 200 })
 
     else:
-        return json.dumps({ "message": 'user is not successfully added.', "status": 500 }), 500
+        return jsonify({ "message": 'user is not successfully added.', "status": 500 })
 
-@app.route(baseAPIurl+'/getCardData/<id>', methods = ['Get'])
-def get_cards(id):
-   
-    cards = Card.query.filter(Card.user_id==id).all()
+@app.route(f'{base_api_url}/getCardData', methods = ['Get'])
+@token_required
+def get_cards():
+    
+    user_id = get_user_id()
+    cards = Card.query.filter(Card.user_id == user_id).all()
     
     print(cards)
     if cards is not None:
@@ -72,27 +107,30 @@ def get_cards(id):
         return jsonify({"message":"There is no card record stored by this user.","status":500})
 
 
-@app.route(baseAPIurl+'/searchByCompany/<id>/<companyName>')
-def search_By_Name(id,companyName):
+@app.route(f'{base_api_url}/searchByCompany/<companyName>')
+@token_required
+def search_By_Name(companyName):
     company = Company_info.query.filter(Company_info.company_name == companyName).first()
     print(company)
-    cards = Card.query.filter(Card.company_id==company.company_id, Card.user_id==id).all()
+    cards = Card.query.filter(Card.company_id==company.company_id, Card.user_id==get_user_id()).all()
     card_info = []
     for card in cards:
         card_info.append({"id":card.card_id, "name":card.first_name+" "+card.last_name})
     return jsonify({"cards":card_info,"message":"successfully fetched all cards.","status":200})
 
 
-@app.route(baseAPIurl+'/userProfile/<id>')
-def user_profile(id):
-    user = User.query.get(id)
+@app.route(f'{base_api_url}/userProfile')
+@token_required
+def user_profile():
+    user = User.query.get(get_user_id())
     return jsonify({"info":{"fname":user.first_name, "lname":user.last_name,"phone":user.phone_number,"email":user.email_id}, "status": 200})
 
 
-@app.route(baseAPIurl+'/setUserProfile', methods = ['Post'])
+@app.route(f'{base_api_url}/setUserProfile', methods = ['Post'])
+@token_required
 def set_User_Profile():
     profile = request.get_json()
-    user_id = profile.get('id')
+    user_id = get_user_id()
     fname = profile.get('fname')
     lname = profile.get('lname')
     phone = profile.get('phone')
@@ -110,7 +148,8 @@ def set_User_Profile():
     return jsonify({"message": "Successfully updated.", "status": 200})
 
 
-@app.route(baseAPIurl+'/showCardData/<card_id>')
+@app.route(f'{base_api_url}/showCardData/<card_id>')
+@token_required
 def show_card(card_id):
     card = Card.query.get(card_id)
     print(card)
@@ -133,7 +172,8 @@ def show_card(card_id):
                     "status": 200})
 
 
-@app.route(baseAPIurl+'/updateCard', methods = ['Post'])
+@app.route(f'{base_api_url}/updateCard', methods = ['Post'])
+@token_required
 def update_card():
     card_data = request.get_json()
     card_id = card_data.get('card_id')
@@ -147,7 +187,7 @@ def update_card():
 
     card = Card.query.get(card_id)
     company_obj = Company_info.query.filter(Company_info.company_name == company).first()
-    phone_obj = card.phone
+    phone_obj = card.phones
     email_obj = card.email
 
     if company_obj is None:
@@ -177,33 +217,36 @@ def update_card():
 
     return jsonify({"message":"Successfully updated", "status": 200})
 
-@app.route(baseAPIurl+'/deleteCard', methods = ['Post'])
+@app.route(f'{base_api_url}/deleteCard', methods = ['Post'])
+@token_required
 def delete_Card():
     formData = request.get_json()
     card_id = formData.get('card_id')
+
     card = Card.query.get(card_id)
-    company_id = card.company_id
-    phones = card.phone
-    for phone in phones:
-        db.session.delete(phone)
-        db.session.commit()
-    db.session.delete(card)
-    db.session.commit()
-    cards = Card.query.filter(Card.company_id == company_id).all()
+
+    cards = Card.query.filter(Card.company_id == card.company_id).all()
+
+    card.deleteCard()
+    
+    
     if cards is None:
         company = Company_info.query.get(company_id)
         db.session.delete(company)
-        db.session.commit()
+        
+    db.session.commit()
 
     return jsonify({"message": "Card is successfully deleted.","status": 200})
 
 
-@app.route(baseAPIurl+'/updatePassword', methods = ['Post'])
+@app.route(f'{base_api_url}/updatePassword', methods = ['Post'])
+@token_required
 def update_password():
     update_details = request.get_json()
     username = update_details.get('username')
     old_password = update_details.get('oldPassword')
     new_password = update_details.get('newPassword')
+
     user = User.query.filter(User.username == username).first()
     if user is None:
         return jsonify({"message": "Invalid username or password", "status": 4011})

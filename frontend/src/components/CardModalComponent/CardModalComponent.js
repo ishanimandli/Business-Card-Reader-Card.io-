@@ -7,6 +7,12 @@ ReactModal.setAppElement('#root');
 export default class CardModal extends Component{
     constructor(props){
         super(props)
+
+        this.state = {
+            cardData: {},
+            dataChanged: false
+        };
+
         this.state = {
             fname: "",
             lname: "",
@@ -21,16 +27,21 @@ export default class CardModal extends Component{
         }
         this.handleCloseModal = this.handleCloseModal.bind(this)
     }
-    componentDidMount(){
+
+    componentDidMount() {
         console.log('componentDidMount')
         this.showCardData()
-
     }
+
     async showCardData(){
         console.log(this.props.showCardModal)
         if(this.props.showCardModal){
             console.log(this.props.card_id)
             const response = await getCard(this.state.card_id)
+            if(response.status == 403){
+                window.location.href='/'
+            }
+            // this.setState({cardData: response.cardData});
             this.setState({
                 fname: response.cardData.fname,
                 lname: response.cardData.lname,
@@ -43,46 +54,14 @@ export default class CardModal extends Component{
         }
         
     }
-    handleCompanyChange(evt){
-        if(evt){
-            this.setState({
-                companyName: evt.target.value,
-                dataChanged: true
-            })
-        }
+    // TODO
+    handleFieldChange(fieldName, newValue) {
+        this.setState({
+            [fieldName]: newValue,
+            dataChanged: true
+        });
     }
-    handleDiscChange(evt){
-        if(evt){
-            this.setState({
-                description: evt.target.value,
-                dataChanged: true
-            })
-        }
-    }
-    handlefnameChange(evt){
-        if(evt){
-            this.setState({
-                fname: evt.target.value,
-                dataChanged: true
-            })
-        }
-    }
-    handlelnameChange(evt){
-        if(evt){
-            this.setState({
-                lname: evt.target.value,
-                dataChanged: true
-            })
-        }
-    }
-    handleJobTitleChange(evt){
-        if(evt){
-            this.setState({
-                jobTitle: evt.target.value,
-                dataChanged: true
-            })
-        }
-    }
+
     handlePhoneChange(evt,index){
         if(evt){
             const list = this.state.phones
@@ -100,7 +79,7 @@ export default class CardModal extends Component{
     }
     handleEmailChange(evt,index){
         if(evt){
-            const list = this.state.emails
+            const list = this.state.emails;
             for(const email of list){
                 if(email.id == index){
                     email.email_id = evt.target.value
@@ -122,6 +101,9 @@ export default class CardModal extends Component{
             console.log({fname,lname,phones,emails,jobTitle,companyName,description,card_id})
             const response = await updateCard({fname,lname,phones,emails,jobTitle,companyName,description,card_id})
             // console.log(response)
+            if(response.status == 403){
+                window.location.href='/'
+            }
             if(response.status == 200){
                 this.setState({
                     dataChanged: false
@@ -134,21 +116,35 @@ export default class CardModal extends Component{
         if(evt){
             const { card_id } = this.state
             const response = await deleteCard({ card_id })
+            if(response.status == 403){
+                window.location.href='/'
+            }
             this.props.onCloseModal()
         }
         
     }
     render(){
+        // const { fname, lname } = this.state.cardData;
         return (
             <div>
                 <ReactModal 
 						isOpen={this.props.showCardModal}
-						contentLabel="Minimal Modal Example">
+						>
                         
 							<div>
 								<p>Name: </p>
-								<input type="text" defaultValue={this.state.fname} onChange={(evt) => this.handlefnameChange(evt)}></input>
-								<input type="text" defaultValue={this.state.lname} onChange={(evt) => this.handlelnameChange(evt)}></input>
+								<input
+                                    type="text"
+                                    defaultValue={this.state.fname}
+                                    // onChange={(evt) => this.handlefnameChange(evt)}
+
+                                    onChange={(evt) => this.handleFieldChange('fname', evt.target.value)}
+                                />
+                                <input 
+                                    type="text" 
+                                    defaultValue={this.state.lname} 
+                                    onChange={(evt) => this.handleFieldChange('lname', evt.target.value)}
+                                />
 								<p>Phone number:</p>
 								{this.state.phones.map(phone =>{
 									return<input key={phone.phone_id} type="text" value={phone.phone_num} onChange={(evt) => this.handlePhoneChange(evt,phone.phone_id)}></input>
@@ -160,13 +156,25 @@ export default class CardModal extends Component{
 								})}
 								<br/>
                                 <p>Company name:</p>
-                                <input type="text" value={this.state.companyName} onChange={(evt) => this.handleCompanyChange(evt)}></input>
+                                <input 
+                                    type="text" 
+                                    value={this.state.companyName} 
+                                    onChange={(evt) => this.handleFieldChange('companyName', evt.target.value)}
+                                />
                                 <br/>				
                                 <p>Job title:</p>
-								<input type="text" value={this.state.jobTitle} onChange={(evt) => this.handleJobTitleChange(evt)}></input>
+                                <input 
+                                    type="text" 
+                                    value={this.state.jobTitle} 
+                                    onChange={(evt) => this.handleFieldChange('jobTilte', evt.target.value)}
+                                />
                                 <br/>
                                 <p>Description:</p>
-                                <textarea type="text" value={this.state.description} onChange={(evt) => this.handleDiscChange(evt)}></textarea>
+                                <textarea 
+                                    type="text" 
+                                    value={this.state.description} 
+                                    onChange={(evt) => this.handleFieldChange('description', evt.target.value)}
+                                />
                                 <br/>
                                 <button onClick={this.handleCloseModal}>Close Modal</button>
                                 <button disabled={!this.state.dataChanged} onClick={(evt) => {this.handleUpdateData(evt)}}>Update</button>

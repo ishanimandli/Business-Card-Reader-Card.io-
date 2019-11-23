@@ -57,10 +57,21 @@ class Card(db.Model):
                            backref='user_cards')
     company = db.relationship('Company_info',
                             backref='company_cards')
-    phone = db.relationship('Phone_info',
+    phones = db.relationship('Phone_info',
                             backref='card_phones')
     email = db.relationship('Email_info',
                             backref='card_emails')
+
+    def deleteCard(self):
+        """Delete relationships to card, then delete card from db."""
+
+        for phone in self.phones:
+            db.session.delete(phone)
+        for em in self.email:
+            db.session.delete(em)
+        # delete emails
+
+        db.session.delete(self)
 
 
 

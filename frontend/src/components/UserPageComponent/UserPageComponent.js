@@ -22,16 +22,19 @@ export default class UserPageComponent extends Component{
 			cardId: ""
 		}
 		this.handleCloseModal = this.handleCloseModal.bind(this)
+		// this.handleScanClick = this.handleScanClick.bind(this)
 	}
 	
 	componentDidMount() {
 		this.fetchAllCards()
-		let originalCardList = []
 	}
 
 	async fetchAllCards() {
-		const response = await getCardData(localStorage.getItem('id'))
+		const response = await getCardData()
 		// console.log(response)
+		if(response.status == 403){
+			window.location.href='/'
+		}
 		if(response.status === 200){
 			
 			this.setState({
@@ -71,8 +74,7 @@ export default class UserPageComponent extends Component{
 	
 	handleLogoutClick(evt){
 		if(evt){
-			localStorage.removeItem('id');
-			localStorage.removeItem('cardUser');
+			localStorage.removeItem('token');
 			this.setState({logoutFlage: true})
 		}
 	}
@@ -126,7 +128,10 @@ export default class UserPageComponent extends Component{
 	async handleSelectedValue(evt){
 		if(evt){
 			if(evt.target.value != 'null'){
-				const response = await cardFromCompany(evt.target.value,localStorage.getItem('id'))
+				const response = await cardFromCompany(evt.target.value)
+				if(response.status == 403){
+					window.location.href='/'
+				}
 				this.setState({
 					listOfcards: response.searchData
 				})
@@ -156,6 +161,11 @@ export default class UserPageComponent extends Component{
 		this.fetchAllCards()
 		// console.log(this.state.showModal)
 	}
+	handleScanClick(evt){
+		if(evt){
+			window.location.href = '/#/newCard'
+		}
+	}
 	render(){
 		if(this.state.logoutFlage){
 			return <Redirect to = "/" />
@@ -167,7 +177,8 @@ export default class UserPageComponent extends Component{
 					<div><a onClick={(evt) => {this.setState({clickedProfile:true})}}>Your Profile</a></div>
 					<div><button onClick={(evt) => this.handleLogoutClick(evt)}>Logout</button></div>
 					<div>
-						<input type="file" name ="myFile"></input><button>Scan</button>
+						<input type="file" name ="myFile"></input>
+						<button onClick={(evt) => {this.handleScanClick(evt)}}>Scan</button>
 					</div>
 					<input type='text' value={this.state.searchName} onChange={(evt) => this.handleSearchNameChange(evt)} ></input>
 					<button onClick={(evt) => {this.handleCancleClick(evt)}}>Cancle</button>
