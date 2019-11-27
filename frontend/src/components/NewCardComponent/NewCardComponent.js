@@ -88,7 +88,17 @@ export default class NewCardComponent extends Component{
 			const {fname,lname,phone_number,email_id,jobTitle,company,description} = this.state
 			const formData = {fname,lname,phone_number,email_id,jobTitle,company,description}
 			const response = await saveNewCard(formData)
-			console.log(response)
+			if(response.status == 200){
+				this.setState({
+					fname: "",
+					lname: "",
+					phone_number: [],
+					email_id: [],
+					newCard: false,
+					loading: false
+	
+				})
+			}
 		}
 	}
     render(){

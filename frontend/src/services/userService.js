@@ -110,5 +110,5 @@ export async function saveNewCard(formData){
                                                         headers: {
                                                         Authorization: "Bearer " + localStorage.getItem('token')}
                                                 });
-    return response
+    return {message: response.data.message, status: response.data.status}
 }

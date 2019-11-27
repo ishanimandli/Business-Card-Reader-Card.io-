@@ -73,6 +73,14 @@ class Card(db.Model):
 
         db.session.delete(self)
 
+    # def __init__(self, user_id,fname,lname,company_id,jobTitle,discription):
+
+    #     self.user_id = user_id
+    #     self.first_name = fname
+    #     self.last_name = lname
+    #     self.company_id = company_id
+    #     self.job_title = jobTitle
+    #     self.discription = discription
 
 
 class Company_info(db.Model):
@@ -88,8 +96,8 @@ class Company_info(db.Model):
                            nullable =False,
                            unique = True)
     
-    def __init__(self, company):
-        self.company_name = company
+    # def __init__(self, company):
+    #     self.company_name = company
 
 
 

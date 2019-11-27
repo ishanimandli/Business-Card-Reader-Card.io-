@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = "uploadedImages"
+app.config['UPLOAD_FOLDER'] = "uploadCards"
 CORS(app)
 app.secret_key = "thisisasecretkey"
 
@@ -306,26 +306,34 @@ def save_new_card():
 
     isCompany = Company_info.query.filter(Company_info.company_name == company).first()
     if isCompany is None:
-        db.session.add(Company_info(company))
+        c_id = db.session.add(Company_info(company_name = company))
         db.session.commit()
+        print(c_id)
+    
+    company_data = Company_info.query.filter(Company_info.company_name == company).first()
 
-    company_id = Company_info.query.filter(Company_info.company_name == company).first()
-
-    db.session.add(Card(user_id,fname,lname,company_id,jobTitle,description))
+    db.session.add(Card(user_id = user_id,
+                        first_name = fname,
+                        last_name = lname,
+                        company_id = company_data.company_id,
+                        job_title = jobTitle,
+                        discription = description))
     db.session.commit()
 
-    card_id = Card.query.filter(Card.user_id == user_id).order_by(desc(Card.card_id)).first()
+    card = Card.query.filter(Card.user_id == user_id).order_by(Card.card_id.desc()).first()
 
     for phone in phone_list:
-        db.session.add(Phone_info(card_id,phone['phone_num']))
+        db.session.add(Phone_info(card_id = card.card_id,
+                                  phone_number = phone['phone_num']))
 
     for email in email_list:
-        db.session.add(Email_info(card_id,email['email_id']))
+        db.session.add(Email_info(card_id = card.card_id,
+                                  email_id = email['email_id']))
 
     db.session.commit()
     
 
-    return jsonify({'message': 'Success'})
+    return jsonify({'message': 'Success','status':200})
 
 
 if __name__ == "__main__":
