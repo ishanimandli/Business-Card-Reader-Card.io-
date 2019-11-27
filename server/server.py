@@ -1,12 +1,16 @@
-from flask import Flask, redirect, render_template, request, session, flash, jsonify
+from flask import Flask, redirect, render_template, request, session, flash, jsonify, current_app
 from model import db, User, Card, Company_info, Phone_info, Email_info,connect_to_db
 from flask_cors import CORS
+from cardScanner import scan_card
 import json
 import jwt
 import datetime
 from functools import wraps
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = "uploadedImages"
 CORS(app)
 app.secret_key = "thisisasecretkey"
 
@@ -51,7 +55,7 @@ def log_in():
     
     if user and user.password == password:
         token = jwt.encode({'user_id':user.user_id, 
-                            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes = 60)},
+                            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours = 24)},
                             app.secret_key)    
         res = jsonify({"token": token.decode('UTF-8'),
                        "message": 'successfully logged in.', 
@@ -258,6 +262,73 @@ def update_password():
         db.session.commit()
         return jsonify({"message": "Password is successfully updated.", "status": 200})
 
+
+@app.route(f'{base_api_url}/scanCard', methods = ['Post'])
+@token_required
+def scan_Card():
+    image_File = request.files['file']
+    # print(request.files['file'].filename)
+    
+    filename = secure_filename(image_File.filename)
+    # print(os.path.join(os.path.dirname(__file__),app.config['UPLOAD_FOLDER'], filename))
+    image_File.save(os.path.join(os.path.dirname(__file__),app.config['UPLOAD_FOLDER'], filename))
+    data = scan_card(filename)
+    # print('-----------------------------------------------------')
+    print(data)
+    phone_list = []
+    email_list = []
+
+    for index,phone in enumerate(data['phones']):
+        phone_list.append({"phone_id":"p"+str(index), "phone_num":phone})
+    for index,email in enumerate(data['emails']):
+        email_list.append({"id":"e"+str(index), "email_id":email})
+    
+    return jsonify({"data":{'name':data['name'],
+                            'phones':phone_list,
+                            'emails':email_list},
+                    "message":"Data is fetched successfully.","status":200})
+
+
+@app.route(f'{base_api_url}/saveNewCard',methods=['Post'])
+@token_required
+def save_new_card():
+    newCard = request.get_json()
+
+    user_id = get_user_id()
+    fname = newCard.get('fname')
+    lname = newCard.get('lname')
+    phone_list = newCard.get('phone_number')
+    email_list = newCard.get('email_id')
+    jobTitle = newCard.get('jobTitle')
+    company = newCard.get('company')
+    description = newCard.get('description')
+    # print(newCard)
+
+    isCompany = Company_info.query.filter(Company_info.company_name == company).first()
+    if isCompany is None:
+        db.session.add(Company_info(company))
+        db.session.commit()
+
+    company_id = Company_info.query.filter(Company_info.company_name == company).first()
+
+    db.session.add(Card(user_id,fname,lname,company_id,jobTitle,description))
+    db.session.commit()
+
+    card_id = Card.query.filter(Card.user_id == user_id).order_by(desc(Card.card_id)).first()
+
+    for phone in phone_list:
+        db.session.add(Phone_info(card_id,phone['phone_num']))
+
+    for email in email_list:
+        db.session.add(Email_info(card_id,email['email_id']))
+
+    db.session.commit()
+    
+
+    return jsonify({'message': 'Success'})
+
+
 if __name__ == "__main__":
     connect_to_db(app)
     app.run(debug=True, host='0.0.0.0')
+

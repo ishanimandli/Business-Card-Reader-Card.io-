@@ -93,3 +93,22 @@ export async function updatePassword(formData){
                                                 });
     return {message: response.data.message, status: response.data.status}
 }
+
+export async function loadNewCardData(formData){
+    const PATH = baseUrl + '/scanCard'
+    const response = await axios.post(PATH, formData,{
+                                                        headers: {
+                                                        Authorization: "Bearer " + localStorage.getItem('token')},
+                                                        'Content-Type' : 'multipart/form-data'
+                                                });
+    return {data: response.data.data, message: response.data.message, status: response.data.status }
+}
+
+export async function saveNewCard(formData){
+    const PATH = baseUrl + '/saveNewCard'
+    const response = await axios.post(PATH,formData,{
+                                                        headers: {
+                                                        Authorization: "Bearer " + localStorage.getItem('token')}
+                                                });
+    return response
+}

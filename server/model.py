@@ -87,6 +87,9 @@ class Company_info(db.Model):
     company_name = db.Column(db.String(80),
                            nullable =False,
                            unique = True)
+    
+    def __init__(self, company):
+        self.company_name = company
 
 
 

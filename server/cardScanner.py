@@ -11,7 +11,10 @@ tesseract_cmd = r'/usr/bin/tesseract'
 pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
 
 def scan_card(path):
-    original_img = cv2.imread(path)
+    Image_Path = 'uploadedImages/'+path
+    # print('!!!! adkfjhaskdjfhakljdshflkjashdfljhas dlkfjhsd lfkjhsdfy878 !!!!!!')
+    # print(Image_Path)
+    original_img = cv2.imread(Image_Path)
     img = cv2.cvtColor(original_img,cv2.COLOR_BGR2GRAY)
 
     img = cv2.resize(img,None,fx=1.2,fy=1.2)
@@ -28,8 +31,8 @@ def scan_card(path):
     img = cv2.blur(img,(3,3))
 
     result = pytesseract.image_to_string(Image.fromarray(img),lang='eng')
-    print(result)
-    print('===================================================')
+    # print(result)
+    # print('===================================================')
 
     fax_pattern = re.compile(r'[Ff][Aa]?[Xx]?[:\- ]*([\+\()]?[0-9]{3}.*[0-9]{3}[\.\-]?[ ]?[0-9]{4})')
     phone_regex = re.compile(r'[\+\()]?[0-9]{3}[\)\.\-]?[ ]?[0-9]{3}[\.\-]?[ ]?[0-9]{4}')
@@ -39,20 +42,26 @@ def scan_card(path):
     email_list = email_regex.findall(result)
     phone_numbers = phone_regex.findall(result)
     fax_number = fax_pattern.findall(result)
-    name = parseName(result)
+    name = parseName(result).strip()
 
-    print("Name: ",name)
-    print('Email id: ',email_list)
+    # print("Name: ",name)
+    # print('Email id: ',email_list)
     if phone_numbers is not [] and fax_number is not []:
         for num in fax_number:
             if num in phone_numbers:
                 phone_numbers.remove(num)
 
-    print('Phone Number: ',phone_numbers)
+    # print('Phone Number: ',phone_numbers)
 
     # address = "".join([s for s in result.strip().splitlines(True) if s.strip("\r\n").strip()])
     # print(address)
-    print('Address: ',pat.findall(result))
+    # print('Address: ',pat.findall(result))
+
+    card_dictionary = {'name': name,
+                        'phones': phone_numbers,
+                        'emails': email_list}
+    
+    return card_dictionary
     
 def parseName(document):
     name_str = ""
@@ -102,10 +111,10 @@ def parseName(document):
     #         break
     # if name_str is "":
     #     name_str = names
-    print(org_str)
+    # print(org_str)
     return name_str
    
     
     # return names    
 
-scan_card('../business_cards/Reference/002.jpg')
+# scan_card('../business_cards/Reference/069.jpg')

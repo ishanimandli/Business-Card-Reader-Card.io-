@@ -161,7 +161,7 @@ export default class UserPageComponent extends Component{
 		this.fetchAllCards()
 		// console.log(this.state.showModal)
 	}
-	handleScanClick(evt){
+	handleNewClick(evt){
 		if(evt){
 			window.location.href = '/#/newCard'
 		}
@@ -177,8 +177,8 @@ export default class UserPageComponent extends Component{
 					<div><a onClick={(evt) => {this.setState({clickedProfile:true})}}>Your Profile</a></div>
 					<div><button onClick={(evt) => this.handleLogoutClick(evt)}>Logout</button></div>
 					<div>
-						<input type="file" name ="myFile"></input>
-						<button onClick={(evt) => {this.handleScanClick(evt)}}>Scan</button>
+						
+						<button onClick={(evt) => {this.handleNewClick(evt)}}>New Card</button>
 					</div>
 					<input type='text' value={this.state.searchName} onChange={(evt) => this.handleSearchNameChange(evt)} ></input>
 					<button onClick={(evt) => {this.handleCancleClick(evt)}}>Cancle</button>
