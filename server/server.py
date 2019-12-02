@@ -336,8 +336,7 @@ def save_new_card():
 
     db.session.commit()
     
-    # account_sid = 'AC239ef8cc16ed8e91c0d84301ae24504c'
-    # auth_token = 'c3a963865a9a430d4a8c1e0f5a8548b5'
+    # 
     # client = Client(account_sid, auth_token)
 
     # message = client.messages \
