@@ -6,14 +6,18 @@ import re
 from spacy.lang.en import English 
 # import spacy
 from nerd import ner
+import pandas as pd
+from fuzzywuzzy import fuzz, process
+import csv
+import requests
+
 
 tesseract_cmd = r'/usr/bin/tesseract'
 pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
 
 def scan_card(path):
-    Image_Path = 'uploadedImages/'+path
-    # print('!!!! adkfjhaskdjfhakljdshflkjashdfljhas dlkfjhsd lfkjhsdfy878 !!!!!!')
-    # print(Image_Path)
+    Image_Path = 'uploadCards/'+path
+    
     original_img = cv2.imread(Image_Path)
     img = cv2.cvtColor(original_img,cv2.COLOR_BGR2GRAY)
 
@@ -31,8 +35,7 @@ def scan_card(path):
     img = cv2.blur(img,(3,3))
 
     result = pytesseract.image_to_string(Image.fromarray(img),lang='eng')
-    # print(result)
-    # print('===================================================')
+    
 
     fax_pattern = re.compile(r'[Ff][Aa]?[Xx]?[:\- ]*([\+\()]?[0-9]{3}.*[0-9]{3}[\.\-]?[ ]?[0-9]{4})')
     phone_regex = re.compile(r'[\+\()]?[0-9]{3}[\)\.\-]?[ ]?[0-9]{3}[\.\-]?[ ]?[0-9]{4}')
@@ -43,24 +46,39 @@ def scan_card(path):
     phone_numbers = phone_regex.findall(result)
     fax_number = fax_pattern.findall(result)
     name = parseName(result).strip()
+    result = ' '.join(result.split())
+    print(result)
+    URL = 'https://london-nlp.finidex.com/entitiesapi'
+    PARAMS = {'mode':'getentities',
+              'apikey': 'b47d41ibsnmxdw20xim07rzerb1v18qn',
+              'item1': result}
 
-    # print("Name: ",name)
-    # print('Email id: ',email_list)
+    r= requests.get(url = URL, params = PARAMS)
+    response = r.json()
+
+    print(response['item1']['list_all_persons_raw'])
+    print(response['item1']['list_all_organizations_raw'])
+
+    # name = []
+    # for value in response['item1']['list_all_persons_raw'].values():
+    #     name.append(value.title())   
+
+    # org = []
+    # for value in response['item1']['list_all_organizations_raw'].values():
+    #     org.append(value.title())
+
+
     if phone_numbers is not [] and fax_number is not []:
         for num in fax_number:
             if num in phone_numbers:
                 phone_numbers.remove(num)
 
-    # print('Phone Number: ',phone_numbers)
-
-    # address = "".join([s for s in result.strip().splitlines(True) if s.strip("\r\n").strip()])
-    # print(address)
-    # print('Address: ',pat.findall(result))
 
     card_dictionary = {'name': name,
                         'phones': phone_numbers,
-                        'emails': email_list}
-    
+                        'emails': email_list,
+                        'jobTitle': parseJobTitle(result).title()}
+    print(card_dictionary)
     return card_dictionary
     
 def parseName(document):
@@ -75,46 +93,23 @@ def parseName(document):
     for word in sent:
         if word.label_ == 'ORG':
             org_str = f'{org_str} {word}'
-    # # print(document)
-    # # Two words (can contain "-" or ".") of 2 characters or more, separated by a space
-    # personsNameRegex = "[\w\-.]{2,} [\w\-.]{2,}"
-    # # print(re.findall(personsNameRegex, document))
-    # nameDisqualifiers = ("ENGINEER", "DEVELOPER", "LTD", "INC", "TECHNOLOGIES",
-    #                      "COMPANY","INSTITUTE","COMPUTER", "SCEINCE","SOLUTIONS",
-    #                      "MANAGER")
-    # names = re.findall(personsNameRegex, document)
-    # name_str = ""
-    # suggested_name = []
-    # # nlp = spacy.load('en_core_web_sm')
-    # # Iterate through each of the matches found in the document
-    # for name in names:
-    #     # Seperate the contents of this name by a space
-    #     nameParts = name.upper().split(" ")
 
-    #         # Take the intersection of the nameParts and the nameDisqualifiers,
-    #         # if there are no intersecting names (the intersection set is empty),
-    #         # then return this name (loop will exit, the first name that matches
-    #         # this criteria is most likely the real name)
-    #     disqualifiersInNameParts = set(nameParts).intersection(nameDisqualifiers)
-    #     if not disqualifiersInNameParts:
-    #         # print(nameParts)
-    #         suggested_name.append(name)
-    #         sent = ner.name(document,language='en_core_web_sm')
-    #         for word in sent:
-    #             if word.label_ == 'PERSON':
-    #                 name_str = f'{name_str} {word}'
-    #                 break
-    #                 # print(word.text,"-------",word.label_)
-    #             # if word.label_ == 'ORG':
-    #             #     print(word.text,"-------",word.label_)
-    #     if name_str is not "":
-    #         break
-    # if name_str is "":
-    #     name_str = names
-    # print(org_str)
     return name_str
    
     
     # return names    
+
+def parseJobTitle(document):
+    name_str = ""
+    search_through = pd.read_csv('job-title.csv', sep=',\n',header= None,engine='python')
+    Regex = "[\w]{2,}"
+    names = re.findall(Regex, document)
+    for word in names:
+        ratio = process.extract( word, search_through[0], limit=1,scorer=fuzz.ratio)
+        if ratio[0][1] > 80:
+            name_str = f'{name_str} {word}'
+    return name_str
+
+
 
 # scan_card('../business_cards/Reference/069.jpg')

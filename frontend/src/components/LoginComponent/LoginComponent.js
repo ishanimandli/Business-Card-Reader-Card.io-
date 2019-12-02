@@ -45,11 +45,13 @@ export default class LoginComponent extends Component {
         }
         const response = await userLogin(formData)
     
-        if(response && response.status === 200) { 
+        if(response && response.data.status === 200) { 
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('name',response.data.name);
             this.setState({redirect: true})
         } else {
-            event.preventDefault();
+            alert(response.data.message)
+            window.location.href = '/'
         }
     }
 

@@ -3,3 +3,5 @@ env/
 business_cards
 frontend/node_modules
 uploadCards/
+job-phrase-list.csv
+job-title.csv

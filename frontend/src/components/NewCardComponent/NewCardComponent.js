@@ -43,6 +43,7 @@ export default class NewCardComponent extends Component{
 				lname: name[1],
 				phone_number: response.data.phones,
 				email_id: response.data.emails,
+				jobTitle: response.data.jobTitle,
 				newCard: true,
 				loading: false
 
@@ -98,6 +99,9 @@ export default class NewCardComponent extends Component{
 					loading: false
 	
 				})
+				if(!confirm('Do you want to add more cards?')){
+					window.location.href = '/userPage'
+				}
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
 
 import CardModal from '../CardModalComponent/CardModalComponent.js'
+import HeaderComponent from '../HeaderComponent/HeaderComponent.js'
 
 
 
@@ -47,20 +48,6 @@ export default class UserPageComponent extends Component{
 			this.setState({listOfcards: []})
 		}
 	}
-
-	showCardData(){
-		const {listOfcards} = this.state
-		return (<section>
-			{listOfcards && listOfcards.length > 0 && 
-			<div>
-				{listOfcards.map(data => {
-					const cid = data.id
-					 return <div key={data.id} onClick={(evt) => this.handleRecordClick(evt,cid)}>{data.name}</div>
-				})}
-			</div>}
-			{listOfcards && listOfcards.length === 0 && <div>No Cards available</div>}
-		</section>)
-	}
 	handleRecordClick(evt,cid){
 		if(evt){
 			console.log('CLicked')
@@ -80,40 +67,9 @@ export default class UserPageComponent extends Component{
 	}
 	handleSearchNameChange(evt){
 		if(evt){
-			this.setState({originalCardList:this.state.listOfcards})
-			this.setState({
-				searchName: evt.target.value
-			})
-			let currentList = [];
-        	// Variable to hold the filtered list before putting into state
-   			 let newList = [];
-
-        	// If the search bar isn't empty
-    		if (this.state.searchName !== "") {
-            	// Assign the original list to currentList
-      			currentList = this.originalCardList;
-
-            	// Use .filter() to determine which items should be displayed
-            	// based on the search terms
-      			newList = currentList.filter(item => {
-                			// change current item to lowercase
-        					const lc = item.name.toLowerCase();
-               				// change search term to lowercase
-        					const filter = this.state.searchName.toLowerCase();
-                			// check to see if the current list item includes the search term
-                			// If it does, it will be added to newList. Using lowercase eliminates
-                			// issues with capitalization in search terms and search content
-        				return lc.includes(filter);
-      					});
-			} 
-			else {
-            	// If the search bar is empty, set newList to original task list
-      			newList = this.originalCardList;
-    		}
-        	// Set the filtered state based on what our rules added to newList
-    		this.setState({
-      			listOfcards: newList
-    		});
+		this.setState({
+			searchName: evt.target.value
+		})
 		}
 	}
 	handleCancleClick(evt){
@@ -174,18 +130,35 @@ export default class UserPageComponent extends Component{
 			return <Redirect to = "/userProfile" />
 		}
 		return (<div>
-					<div><a onClick={(evt) => {this.setState({clickedProfile:true})}}>Your Profile</a></div>
-					<div><button onClick={(evt) => this.handleLogoutClick(evt)}>Logout</button></div>
-					<div>
-						
-						<button onClick={(evt) => {this.handleNewClick(evt)}}>New Card</button>
+					<HeaderComponent user={localStorage.getItem('name')}></HeaderComponent>
+					<div className="login-page">
+						<div className="form">
+							<div>
+								<input type='text' value={this.state.searchName} 
+										placeholder='Search'
+										onChange={(evt) => this.handleSearchNameChange(evt)} />
+								<button onClick={(evt) => {this.handleCancleClick(evt)}}>Cancle</button>
+							</div>
+							<button onClick={(evt) => {this.handleNewClick(evt)}}>+</button>
+							
+							{this.showCompanyList()}
+							<h1>Names</h1>
+							<ul>
+							{(this.state.listOfcards
+								.filter(card => card.name.toLowerCase().includes(this.state.searchName))
+								.map(cardToShow => <li key={cardToShow.id} 
+														onClick={(evt) => this.handleRecordClick(evt,cardToShow.id)}>
+														{cardToShow.name}
+														</li>)
+							)}
+							</ul>
+							{this.state.showModal && <CardModal card_id={this.state.cardId} showCardModal={this.state.showModal} onCloseModal={this.handleCloseModal}/>}
+						</div>
+					
 					</div>
-					<input type='text' value={this.state.searchName} onChange={(evt) => this.handleSearchNameChange(evt)} ></input>
-					<button onClick={(evt) => {this.handleCancleClick(evt)}}>Cancle</button>
-					{this.showCompanyList()}
-					<h1>Names</h1>
-					{this.showCardData()}
-					{this.state.showModal && <CardModal card_id={this.state.cardId} showCardModal={this.state.showModal} onCloseModal={this.handleCloseModal}/>}
+					{/* <div><a onClick={(evt) => {this.setState({clickedProfile:true})}}>Your Profile</a></div>
+					<div><button onClick={(evt) => this.handleLogoutClick(evt)}>Logout</button></div> */}
+					
 				</div>)
 	}
 	

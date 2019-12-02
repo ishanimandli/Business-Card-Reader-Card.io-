@@ -101,6 +101,7 @@ export async function loadNewCardData(formData){
                                                         Authorization: "Bearer " + localStorage.getItem('token')},
                                                         'Content-Type' : 'multipart/form-data'
                                                 });
+    console.log(response.data.data)
     return {data: response.data.data, message: response.data.message, status: response.data.status }
 }
 

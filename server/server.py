@@ -8,6 +8,7 @@ import datetime
 from functools import wraps
 from werkzeug.utils import secure_filename
 import os
+from twilio.rest import Client
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "uploadCards"
@@ -22,7 +23,7 @@ base_api_url = '/api/v1'
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        print('------------------------',request)
+        # print('------------------------',request)
         token = request.headers['Authorization']
         if 'Bearer' in token:
             #  Remove Bearer from string
@@ -57,7 +58,9 @@ def log_in():
         token = jwt.encode({'user_id':user.user_id, 
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours = 24)},
                             app.secret_key)    
+        name = user.first_name + user.last_name
         res = jsonify({"token": token.decode('UTF-8'),
+                       "name": name,
                        "message": 'successfully logged in.', 
                        "status": 200 })
 
@@ -77,7 +80,7 @@ def new_user():
     phone = data.get('phone')
     
     user = User.query.filter((User.username==username) | (User.email_id==email)).first()
-    print(user)
+    # print(user)
     if user is None:
         db.session.add(User(first_name=fname,
                             last_name=lname,
@@ -99,7 +102,7 @@ def get_cards():
     user_id = get_user_id()
     cards = Card.query.filter(Card.user_id == user_id).all()
     
-    print(cards)
+    # print(cards)
     if cards is not None:
         card_info = []
         company_set=set()
@@ -115,7 +118,7 @@ def get_cards():
 @token_required
 def search_By_Name(companyName):
     company = Company_info.query.filter(Company_info.company_name == companyName).first()
-    print(company)
+    # print(company)
     cards = Card.query.filter(Card.company_id==company.company_id, Card.user_id==get_user_id()).all()
     card_info = []
     for card in cards:
@@ -156,7 +159,7 @@ def set_User_Profile():
 @token_required
 def show_card(card_id):
     card = Card.query.get(card_id)
-    print(card)
+    # print(card)
     phones = Phone_info.query.filter(Phone_info.card_id==card_id).all()
     emails = Email_info.query.filter(Email_info.card_id==card_id).all()
     phone_list = []
@@ -207,7 +210,7 @@ def update_card():
     db.session.commit()
 
     for phone in phones:
-        print('--------------------------'+str(phone['phone_id']))
+        # print('--------------------------'+str(phone['phone_id']))
         phone_obj = Phone_info.query.get(phone['phone_id'])
         phone_obj.phone_number = phone['phone_num']
         db.session.add(phone_obj)
@@ -273,8 +276,8 @@ def scan_Card():
     # print(os.path.join(os.path.dirname(__file__),app.config['UPLOAD_FOLDER'], filename))
     image_File.save(os.path.join(os.path.dirname(__file__),app.config['UPLOAD_FOLDER'], filename))
     data = scan_card(filename)
-    # print('-----------------------------------------------------')
-    print(data)
+    print('-----------------------------------------------------')
+    # print(data)
     phone_list = []
     email_list = []
 
@@ -282,10 +285,11 @@ def scan_Card():
         phone_list.append({"phone_id":"p"+str(index), "phone_num":phone})
     for index,email in enumerate(data['emails']):
         email_list.append({"id":"e"+str(index), "email_id":email})
-    
+    print(data)
     return jsonify({"data":{'name':data['name'],
                             'phones':phone_list,
-                            'emails':email_list},
+                            'emails':email_list,
+                            'jobTitle':data['jobTitle']},
                     "message":"Data is fetched successfully.","status":200})
 
 
@@ -308,7 +312,7 @@ def save_new_card():
     if isCompany is None:
         c_id = db.session.add(Company_info(company_name = company))
         db.session.commit()
-        print(c_id)
+        # print(c_id)
     
     company_data = Company_info.query.filter(Company_info.company_name == company).first()
 
@@ -332,8 +336,21 @@ def save_new_card():
 
     db.session.commit()
     
+    # account_sid = 'AC239ef8cc16ed8e91c0d84301ae24504c'
+    # auth_token = 'c3a963865a9a430d4a8c1e0f5a8548b5'
+    # client = Client(account_sid, auth_token)
 
+    # message = client.messages \
+    #                 .create(
+    #                     body=f'{fname} {lname} has been added successfully.',
+    #                     from_='+12066732998',
+    #                     to='+12139521102'
+    #                 )
+
+    # print(message.sid)
     return jsonify({'message': 'Success','status':200})
+
+
 
 
 if __name__ == "__main__":
