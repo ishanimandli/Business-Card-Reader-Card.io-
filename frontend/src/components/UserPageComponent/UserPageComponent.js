@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom'
 
 import CardModal from '../CardModalComponent/CardModalComponent.js'
 import HeaderComponent from '../HeaderComponent/HeaderComponent.js'
+import './UserPageComponent.scss'
 
 
 
@@ -37,9 +38,13 @@ export default class UserPageComponent extends Component{
 			window.location.href='/'
 		}
 		if(response.status === 200){
-			
+
 			this.setState({
-				listOfcards: response.data,
+				listOfcards: response.data.sort(function(a,b){
+									if(a.name < b.name) { return -1; }
+									if(a.name > b.name) { return 1; }
+									return 0;
+								}),
 				company_list: response.company_list
 			})
 			// console.log(response.company_list)
@@ -72,7 +77,7 @@ export default class UserPageComponent extends Component{
 		})
 		}
 	}
-	handleCancleClick(evt){
+	handleCancelClick(evt){
 		if(evt){
 			this.setState({
 				listOfcards: this.originalCardList,
@@ -99,15 +104,15 @@ export default class UserPageComponent extends Component{
 		const companies = this.state.company_list
 		// console.log(companies)
 		return (
-		<div>
-			<select onChange={(evt) => {this.handleSelectedValue(evt)}}>
-				<option key='None' value='null'></option>
+		
+			<select className='company-search'onChange={(evt) => {this.handleSelectedValue(evt)}}>
+				<option ></option>
 				{companies && companies.length > 0 &&
 				companies.map(company => {
 					return <option key={company} value={company}>{company}</option>
 				}) }
 			</select>
-		</div>)
+		)
 	}
 	
 	handleCloseModal(){
@@ -133,25 +138,32 @@ export default class UserPageComponent extends Component{
 					<HeaderComponent user={localStorage.getItem('name')}></HeaderComponent>
 					<div className="login-page">
 						<div className="form">
+							<div className='new-card-btn'>
+								<button id='new-card'
+										onClick={(evt) => {this.handleNewClick(evt)}}>
+												+
+								</button>
+							</div>
+						
 							<div>
 								<input type='text' value={this.state.searchName} 
 										placeholder='Search'
 										onChange={(evt) => this.handleSearchNameChange(evt)} />
-								<button onClick={(evt) => {this.handleCancleClick(evt)}}>Cancle</button>
+								<button onClick={(evt) => {this.handleCancelClick(evt)}}>Cancel</button>
+								{this.showCompanyList()}
 							</div>
-							<button onClick={(evt) => {this.handleNewClick(evt)}}>+</button>
-							
-							{this.showCompanyList()}
-							<h1>Names</h1>
-							<ul>
-							{(this.state.listOfcards
-								.filter(card => card.name.toLowerCase().includes(this.state.searchName))
-								.map(cardToShow => <li key={cardToShow.id} 
-														onClick={(evt) => this.handleRecordClick(evt,cardToShow.id)}>
-														{cardToShow.name}
-														</li>)
-							)}
-							</ul>
+							<div className='card-container'>
+								<h1>Names</h1>
+								<ul className='card-list-container'>
+								{(this.state.listOfcards.sort()
+									.filter(card => card.name.toLowerCase().includes(this.state.searchName))
+									.map(cardToShow => <li className='card-list' key={cardToShow.id} 
+															onClick={(evt) => this.handleRecordClick(evt,cardToShow.id)}>
+															{cardToShow.name}
+															</li>)
+								)}
+								</ul>
+							</div>
 							{this.state.showModal && <CardModal card_id={this.state.cardId} showCardModal={this.state.showModal} onCloseModal={this.handleCloseModal}/>}
 						</div>
 					

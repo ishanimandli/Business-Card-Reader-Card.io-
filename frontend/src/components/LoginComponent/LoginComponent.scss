@@ -2,7 +2,7 @@
 
 .login-page {
   width: 360px;
-  padding: 8% 0 0;
+  padding: 6% 0 0;
   margin: auto;
 }
 .form-title{
@@ -13,13 +13,14 @@
 }
 .form {
   position: relative;
-  z-index: 1;
-  background: #FFFFFF;
+  z-index: 0;
+  background: #eae9e9;
   width: max-content;
   margin: 0 auto 100px;
   padding: 45px;
   text-align: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+  overflow: auto;
 }
 .form input {
   font-family: "Roboto", sans-serif;
@@ -37,18 +38,21 @@
   font-weight: bold;
   text-transform: uppercase;
   outline: 0;
-  background: #018b8b;
-  border: 0;
+  background: white;
+  border-color: #018b8b;
+  border: 1;
+  border-width: 0.2em;
   border-radius: 2.8em;
-  padding: 15px;
-  color: #FFFFFF;
+  padding: 10px;
+  color: #018b8b;
   font-size: 14px;
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
   cursor: pointer;
 }
 .form button:hover,.form button:active,.form button:focus {
-  background: #43A047;
+  background: #049e9e;
+  color: white;
 }
 .form .message {
   margin: 15px 0 0;
@@ -56,7 +60,7 @@
   font-size: 12px;
 }
 .form .message a {
-  color: #4CAF50;
+  color: #018b8b;
   text-decoration: none;
 }
 .container {

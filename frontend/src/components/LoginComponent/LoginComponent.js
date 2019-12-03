@@ -69,8 +69,8 @@ export default class LoginComponent extends Component {
                 <div className="form">
                     <section className="form-title">Card.io</section>
                     <section className="login-form">
-                    <input type="text" placeholder="username" value={this.state.username} onChange={(ev) => this.handleUserNameChange(ev)}/>
-                    <input type="password" placeholder="password" value={this.state.password} onChange={(ev) => this.handlePasswordChange(ev)}/>
+                    <input type="text" placeholder="username" value={this.state.username} onChange={(ev) => this.handleUserNameChange(ev)}/><br/>
+                    <input type="password" placeholder="password" value={this.state.password} onChange={(ev) => this.handlePasswordChange(ev)}/><br/>
                     <button onClick={(event) => this.onSubmit(event)}>login</button>
                     <p className="message">Not registered? <Link to='/register'>Create an account</Link></p>
                     </section>

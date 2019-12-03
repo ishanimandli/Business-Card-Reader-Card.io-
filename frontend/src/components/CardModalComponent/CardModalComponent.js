@@ -126,7 +126,8 @@ export default class CardModal extends Component{
     render(){
         // const { fname, lname } = this.state.cardData;
         return (
-            <div>
+            <div className='login-page'>
+                <div className='form'>
                 <ReactModal 
 						isOpen={this.props.showCardModal}
 						>
@@ -181,6 +182,7 @@ export default class CardModal extends Component{
                                 <button onClick={(evt) =>{ if (window.confirm('Are you sure you wish to delete this item?')) this.handleDeleteCard(evt)}}>Delete Card</button>
 							</div>
 					</ReactModal>
+                </div>
             </div>
         )
     }
