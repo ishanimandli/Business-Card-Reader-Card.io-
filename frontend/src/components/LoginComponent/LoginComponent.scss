@@ -1,8 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
 .login-page {
-  width: 360px;
-  padding: 6% 0 0;
+  width: inherit;
+  padding: 3% 0 0;
   margin: auto;
 }
 .form-title{
@@ -14,46 +14,18 @@
 .form {
   position: relative;
   z-index: 0;
-  background: #eae9e9;
-  width: max-content;
-  margin: 0 auto 100px;
-  padding: 45px;
+  background: #ffff;
+  width: 600px;
+  margin: 100px auto 100px;
+  padding: 10px;
   text-align: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
   overflow: auto;
+  border-radius: 15px;
+  min-height: 500px;;
 }
-.form input {
-  font-family: "Roboto", sans-serif;
-  outline: 0;
-  background: transparent;
-  border-style: none none solid none;
-  border-color: #018b8b;
-  margin: 0 0 15px;
-  padding: 15px;
-  box-sizing: border-box;
-  font-size: 14px;
-}
-.form button {
-  font-family: "Roboto", sans-serif;
-  font-weight: bold;
-  text-transform: uppercase;
-  outline: 0;
-  background: white;
-  border-color: #018b8b;
-  border: 1;
-  border-width: 0.2em;
-  border-radius: 2.8em;
-  padding: 10px;
-  color: #018b8b;
-  font-size: 14px;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
-  cursor: pointer;
-}
-.form button:hover,.form button:active,.form button:focus {
-  background: #049e9e;
-  color: white;
-}
+
+
 .form .message {
   margin: 15px 0 0;
   color: #b3b3b3;

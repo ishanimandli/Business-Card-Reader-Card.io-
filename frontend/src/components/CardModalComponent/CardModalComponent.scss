@@ -1,0 +1,52 @@
+.card-container{
+    display: inline;
+    // flex-direction: column;
+}
+.card-container input{
+    font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: transparent;
+  border-style: none none solid none;
+  border-color: #6b6b6d;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.card-container button{
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  outline: 0;
+  background: white;
+  border-color: #6b6b6d;
+  border: 1;
+  border-width: 0.2em;
+  border-radius: 2.8em;
+  padding: 10px;
+  color: #6b6b6d;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+ReactModal{
+    margin: 0 auto;
+    width: 500px;
+}
+.card-container div{
+    justify-content: space-between;
+}
+.close-tag{
+    float: right;
+    cursor: pointer;
+}
+.close-btn{
+    border-width: 3px;
+    border-radius: 50%;
+    width: 21px;
+    height: 21px;
+    padding: 1px;
+    color: #bababa;
+    
+}

@@ -58,7 +58,7 @@ def log_in():
         token = jwt.encode({'user_id':user.user_id, 
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours = 24)},
                             app.secret_key)    
-        name = user.first_name + user.last_name
+        name = f'{user.first_name} {user.last_name}'
         res = jsonify({"token": token.decode('UTF-8'),
                        "name": name,
                        "message": 'successfully logged in.', 

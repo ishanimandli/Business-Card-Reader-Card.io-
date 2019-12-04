@@ -15,10 +15,11 @@
     max-width: 100%; 
     box-sizing: border-box;
     margin: 0;
-    border: 1px solid #aaa;
-    box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
-    border-radius: .5em;
+    background-color: #efeeee;
+    border-width: 0px;
     -moz-appearance: none;
+    height: 35px;
+    border-radius: 0px;
 }
 .card-list{
     padding: 0.5em;
@@ -26,6 +27,7 @@
     font-weight: 500;
     display: flex;
     border-bottom: 1px solid #aaa;
+    cursor: pointer;
 }
 .new-card-btn{
     display: flex;
@@ -33,12 +35,20 @@
     padding-bottom: 2em;
 }
 #new-card{
-    border-radius: 50%;
     font-size: 2.5em;
-    border-style: double;
-    width: 80px;
-    height: 80px;
+    width: 55px;
+    height: 55px;
+    border-width: 0px;
+    padding-bottom: 5px;
 }
-.car-container{
-    
+.card-container{
+    display: inline-flex;
+    flex-direction: column;
+    width: inherit;
+}
+.search-bar{
+    display: flex;
+    width: inherit;
+    justify-content: center;
+    align-items: center;
 }

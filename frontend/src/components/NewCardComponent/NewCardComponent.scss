@@ -1,0 +1,21 @@
+#file-uploader-input{
+    border: 0px;
+}
+.login-form{
+  width: inherit;
+  padding: 3% 0 0;
+  margin: auto;
+}
+.new-card-div{
+    display: flex;
+    flex-direction: column;
+}
+.new-card-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: baseline;
+}
+#name-div{
+    display: inline;
+}

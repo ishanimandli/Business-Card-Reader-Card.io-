@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { loadNewCardData,saveNewCard } from '../../services/userService'
 import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
-
+import HeaderComponent from '../HeaderComponent/HeaderComponent.js'
+import './NewCardComponent.scss'
 
 
 export default class NewCardComponent extends Component{
@@ -107,54 +108,70 @@ export default class NewCardComponent extends Component{
 	}
     render(){
         return (
-            <div>
+			<div>
+				<HeaderComponent user={localStorage.getItem('name')}></HeaderComponent>
+				<div className='login-form'>
+				<div className='form'>
 				<div>
-					<input type="file" ref={(ref) => { this.uploadInput = ref; }}  ></input>
+					<input id='file-uploader-input'type="file" ref={(ref) => { this.uploadInput = ref; }}  ></input>
 						<button onClick={(evt) => {this.loadCardData(evt)}}>Scan</button>
 					
 				</div>
-				{this.state.loading && <i className='fa fa-refresh fa-spin'>Loading..</i>}
-				{this.state.newCard && <div>
-					<div><img src= {this.state.image} width={500} height={300}/></div>
-					<div>
-						<p>Name:</p>
-						<input type = 'text' value={this.state.fname} name='fname' 
-								onChange={(evt) => {this.handleChange('fname',evt.target.value)}}/>
-						<input type='text' value={this.state.lname} name='lname' 
-								onChange={(evt) => {this.handleChange('lname',evt.target.value)}}/><br/>
-						<p>Phone number:</p>
-						{this.state.phone_number.map(phone =>{
-							// console.log(phone.phone_id)
-							return <input key = {phone.phone_id} value={phone.phone_num} 
-									onChange={(evt) => {this.handlePhoneChange(phone.phone_id,evt)}}/>
-						})}
-						<br/>
-						<p>Email id:</p>
-						{this.state.email_id.map(email =>{
-							// console.log(email.id)
-							return <input key = {email.id} value={email.email_id} 
-									onChange={(evt) => {this.handleEmailChange(email.id,evt)}}/>
-						})}
-						<p>Job title:</p>
-						<input type = 'text' value={this.state.jobTitle} name='jobTitle' 
-								onChange={(evt) => {this.handleChange('jobTitle',evt.target.value)}}/><br/>
-						<p>Company Name:</p>
-						<input type = 'text' value={this.state.company} name='company' 
-								onChange={(evt) => {this.handleChange('company',evt.target.value)}}/><br/>
-						<p>Description:</p>
-                        <textarea 
-                            type="text" 
-							value={this.state.description} 
-							name = 'description'
-                            onChange={(evt) => this.handleChange('description', evt.target.value)}
-                        />
-						<button onClick={(evt) => {this.handleSaveChanges(evt)}}>Save</button>
-					</div>
-				</div>}
+				{this.state.loading && <i>Loading..</i>}
+				<div className='new-card-div'>
+					{this.state.newCard && <div>
+						<div><img src= {this.state.image} width={500} height={300}/></div>
+						<div className='new-card-form'>
+							<div id='name-div'>
+								<div>
+									<p>First Name</p>
+									<input type = 'text' value={this.state.fname} name='fname' 
+											onChange={(evt) => {this.handleChange('fname',evt.target.value)}}/>
+								</div>
+								<div>
+									<p>Last Name</p>
+									<input type='text' value={this.state.lname} name='lname' 
+											onChange={(evt) => {this.handleChange('lname',evt.target.value)}}/><br/>
+								</div>
+							</div>	
+							
+							<p>Phone number:</p>
+							{this.state.phone_number.map(phone =>{
+								// console.log(phone.phone_id)
+								return <input key = {phone.phone_id} value={phone.phone_num} 
+										onChange={(evt) => {this.handlePhoneChange(phone.phone_id,evt)}}/>
+							})}
+							<br/>
+							<p>Email id:</p>
+							{this.state.email_id.map(email =>{
+								// console.log(email.id)
+								return <input key = {email.id} value={email.email_id} 
+										onChange={(evt) => {this.handleEmailChange(email.id,evt)}}/>
+							})}
+							<p>Job title:</p>
+							<input type = 'text' value={this.state.jobTitle} name='jobTitle' 
+									onChange={(evt) => {this.handleChange('jobTitle',evt.target.value)}}/><br/>
+							<p>Company Name:</p>
+							<input type = 'text' value={this.state.company} name='company' 
+									onChange={(evt) => {this.handleChange('company',evt.target.value)}}/><br/>
+							<p>Description:</p>
+							<textarea 
+								type="text" 
+								value={this.state.description} 
+								name = 'description'
+								onChange={(evt) => this.handleChange('description', evt.target.value)}
+							/>
+							<button onClick={(evt) => {this.handleSaveChanges(evt)}}>Save</button>
+						</div>
+					</div>}
+				
+				</div>
+				</div>
+				
 				
 				
 			</div>
-						
+			</div>
         )
     }
 }

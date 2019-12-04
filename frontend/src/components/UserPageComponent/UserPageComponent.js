@@ -21,7 +21,8 @@ export default class UserPageComponent extends Component{
 			company_list: [],
 			clickedProfile: false,
 			showModal: false,
-			cardId: ""
+			cardId: "",
+			searchBy: true
 		}
 		this.handleCloseModal = this.handleCloseModal.bind(this)
 		// this.handleScanClick = this.handleScanClick.bind(this)
@@ -81,9 +82,10 @@ export default class UserPageComponent extends Component{
 		if(evt){
 			this.setState({
 				listOfcards: this.originalCardList,
-				searchName: ""
-				
+				searchName: "",
+				searchBy:true
 			})
+			
 		}
 	}
 	async handleSelectedValue(evt){
@@ -127,6 +129,22 @@ export default class UserPageComponent extends Component{
 			window.location.href = '/#/newCard'
 		}
 	}
+	handleSearchBy(evt){
+		if(evt){
+			console.log(evt.target.value)
+			if(evt.target.value === 'By Company'){
+				this.setState({
+					searchBy: false
+				})
+			}
+			else{
+				this.setState({
+					searchBy: true
+				})
+			}
+			console.log(this.state.searchBy)
+		}
+	}
 	render(){
 		if(this.state.logoutFlage){
 			return <Redirect to = "/" />
@@ -145,15 +163,28 @@ export default class UserPageComponent extends Component{
 								</button>
 							</div>
 						
-							<div>
-								<input type='text' value={this.state.searchName} 
+							<div className='search-bar'>
+								<select className='company-search' onChange={(evt) =>{ this.handleSearchBy(evt)}} defaultValue='name'>
+									<option key='name'>
+											By Name
+									</option>
+									<option key='company'>
+											By Company
+									</option>
+								</select>
+								{(this.state.searchBy) ? 
+										<input type='text' value={this.state.searchName} 
 										placeholder='Search'
-										onChange={(evt) => this.handleSearchNameChange(evt)} />
+										onChange={(evt) => this.handleSearchNameChange(evt)}/> : 
+										
+										this.showCompanyList()
+								}
+								
+								
 								<button onClick={(evt) => {this.handleCancelClick(evt)}}>Cancel</button>
-								{this.showCompanyList()}
 							</div>
 							<div className='card-container'>
-								<h1>Names</h1>
+								
 								<ul className='card-list-container'>
 								{(this.state.listOfcards.sort()
 									.filter(card => card.name.toLowerCase().includes(this.state.searchName))

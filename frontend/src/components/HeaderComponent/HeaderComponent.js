@@ -17,14 +17,14 @@ export default class HeaderComponent extends Component{
                 <div className='profile-container'>
                     
                     <ul className='nav-option'>
-                        <li>
-                            Welcome,{this.props.user}
+                        <li className='user-profile'>
+                            Welcome, {this.props.user}
                         </li>
-                        <li className ='user-profile' 
+                        <li className ='user-profile profile-focus' 
                             onClick={(evt) => {window.location.href = '/userProfile'}}>
                                Profile 
                         </li>
-                        <li className ='user-profile' onClick={(evt) => this.handleLogoutClick(evt)}>
+                        <li className ='user-profile profile-focus' onClick={(evt) => this.handleLogoutClick(evt)}>
                             Logout
                         </li>
                     </ul>

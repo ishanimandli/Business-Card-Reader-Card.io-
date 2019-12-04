@@ -1,12 +1,52 @@
 body {
-    background: #EBE4CC; /* fallback for old browsers */
-    background: -webkit-linear-gradient(right, #EBE4CC, #EBE4CC);
-    background: -moz-linear-gradient(right, #EBE4CC, #EBE4CC);
-    background: -o-linear-gradient(right, #EBE4CC, #EBE4CC);
-    background: linear-gradient(to left, #EBE4CC, #EBE4CC);
+    background: #efeeee; /* fallback for old browsers */
+    background: -webkit-linear-gradient(right, #efeeee, #efeeee);
+    background: -moz-linear-gradient(right, #efeeee, #efeeee);
+    background: -o-linear-gradient(right, #efeeee, #efeeee);
+    background: linear-gradient(to left, #efeeee, #efeeee);
     font-family: 'Rubik', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale; 
-    color: #018b8b;   
-    overflow: hidden;  
+    color: #6b6b6d;   
+    margin: 0;
+}
+
+div[role="dialog"]{
+    width: 500px;
+    left: 25%;
+}
+button{
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  outline: 0;
+  background: white;
+  border-color: #6b6b6d;
+  border: 1;
+  border-width: 1px;
+  padding: 10px;
+  color: #6b6b6d;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+button:hover{
+  background: #2d62af;
+  color: white;
+}
+input {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: transparent;
+    border-style: none none solid none;
+    border-width: 0.5px;
+    border-color: #6b6b6d;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+p{
+  text-align: left;
 }

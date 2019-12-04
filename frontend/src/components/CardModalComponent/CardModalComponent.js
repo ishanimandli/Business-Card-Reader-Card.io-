@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
 import ReactModal from 'react-modal'
 ReactModal.setAppElement('#root');
+import './CardModalComponent.scss'
 export default class CardModal extends Component{
     constructor(props){
         super(props)
@@ -131,55 +132,76 @@ export default class CardModal extends Component{
                 <ReactModal 
 						isOpen={this.props.showCardModal}
 						>
-                        
-							<div>
-								<p>Name: </p>
-								<input
-                                    type="text"
-                                    defaultValue={this.state.fname}
-                                    // onChange={(evt) => this.handlefnameChange(evt)}
+                            <div className='close-tag'>
+                                <button className='close-btn' id='new-card'
+                                        onClick={this.handleCloseModal}>X</button></div>
+                            <div className='card-container'>
+								<span>Name: </span>
+                                <div>
+                                    <input
+                                        type="text"
+                                        defaultValue={this.state.fname}
+                                        // onChange={(evt) => this.handlefnameChange(evt)}
 
-                                    onChange={(evt) => this.handleFieldChange('fname', evt.target.value)}
-                                />
-                                <input 
-                                    type="text" 
-                                    defaultValue={this.state.lname} 
-                                    onChange={(evt) => this.handleFieldChange('lname', evt.target.value)}
-                                />
-								<p>Phone number:</p>
-								{this.state.phones.map(phone =>{
-									return<input key={phone.phone_id} type="text" value={phone.phone_num} onChange={(evt) => this.handlePhoneChange(evt,phone.phone_id)}></input>
-								})}
+                                        onChange={(evt) => this.handleFieldChange('fname', evt.target.value)}
+                                    />
+                                    <input 
+                                        type="text" 
+                                        defaultValue={this.state.lname} 
+                                        onChange={(evt) => this.handleFieldChange('lname', evt.target.value)}
+                                    />
+                                </div>
+								
+								<span>Phone number:</span>
+                                <div>
+                                    {this.state.phones.map(phone =>{
+                                        return<input key={phone.phone_id} type="text" value={phone.phone_num} onChange={(evt) => this.handlePhoneChange(evt,phone.phone_id)}></input>
+                                    })}
+                                </div>
+								
 								<br/>
-								<p>Email id:</p>
-								{this.state.emails.map(email =>{
-									return<input key={email.id} type="email" value={email.email_id} onChange={(evt) => this.handleEmailChange(evt,email.id)}></input>
-								})}
+								<span>Email id:</span>
+                                <div>
+                                    {this.state.emails.map(email =>{
+                                        return<input key={email.id} type="email" value={email.email_id} onChange={(evt) => this.handleEmailChange(evt,email.id)}></input>
+                                    })}
+                                </div>
+								
 								<br/>
-                                <p>Company name:</p>
+                                <span>Company name:</span>
                                 <input 
                                     type="text" 
                                     value={this.state.companyName} 
                                     onChange={(evt) => this.handleFieldChange('companyName', evt.target.value)}
                                 />
                                 <br/>				
-                                <p>Job title:</p>
+                                <span>Job title:</span>
                                 <input 
                                     type="text" 
                                     value={this.state.jobTitle} 
                                     onChange={(evt) => this.handleFieldChange('jobTilte', evt.target.value)}
                                 />
                                 <br/>
-                                <p>Description:</p>
+                                <span>Description:</span>
                                 <textarea 
                                     type="text" 
                                     value={this.state.description} 
                                     onChange={(evt) => this.handleFieldChange('description', evt.target.value)}
                                 />
                                 <br/>
-                                <button onClick={this.handleCloseModal}>Close Modal</button>
-                                <button disabled={!this.state.dataChanged} onClick={(evt) => {this.handleUpdateData(evt)}}>Update</button>
-                                <button onClick={(evt) =>{ if (window.confirm('Are you sure you wish to delete this item?')) this.handleDeleteCard(evt)}}>Delete Card</button>
+                                <div>
+                                    <button disabled={!this.state.dataChanged} 
+                                            onClick={(evt) => {this.handleUpdateData(evt)}}>
+                                                Update
+                                    </button>
+                                    <button onClick={(evt) =>{ 
+                                                    if (window.confirm('Are you sure you wish to delete this item?')) 
+                                                    this.handleDeleteCard(evt)}}>
+                                                Delete Card
+                                    </button>
+                                </div>
+                                
+                                
 							</div>
 					</ReactModal>
                 </div>
