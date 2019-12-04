@@ -49,6 +49,7 @@ export default class NewCardComponent extends Component{
 				loading: false
 
 			})
+			console.log(this.state.email_id)
 		}
 	}
 	handlePhoneChange(index,evt){
@@ -63,7 +64,7 @@ export default class NewCardComponent extends Component{
                 phone_number: list,
                 })
         }
-        console.log(this.state.phone_number)
+        // console.log(this.state.phone_number)
     }
     handleEmailChange(index,evt){
         if(evt){
@@ -77,7 +78,21 @@ export default class NewCardComponent extends Component{
                 email_id: list,
                 })
         }
-        console.log(this.state.email_id)
+        // console.log(this.state.email_id)
+	}
+	handleNewEmailChange(evt){
+		if(evt){
+			this.setState({
+				email_id: [{'email_id': evt.target.value}]
+			})
+		}
+	}
+	handleNewPhoneChange(evt){
+		if(evt){
+			this.setState({
+				phone_number: [{'phone_num': evt.target.value}]
+			})
+		}
 	}
 	handleChange(fieldName, newData) {
         this.setState({
@@ -106,70 +121,94 @@ export default class NewCardComponent extends Component{
 			}
 		}
 	}
+	handleCancelClick(evt){
+		if(evt){
+			this.setState({
+				newCard: false
+			})
+		}
+	}
     render(){
         return (
 			<div>
 				<HeaderComponent user={localStorage.getItem('name')}></HeaderComponent>
 				<div className='login-form'>
 				<div className='form'>
-				<div>
-					<input id='file-uploader-input'type="file" ref={(ref) => { this.uploadInput = ref; }}  ></input>
+				<div className='upload-div'>
+					<input id='file-uploader-input'type="file" ref={(ref) => { this.uploadInput = ref; }}  
+						onClick={(evt) => {this.setState({newCard:false})}}/>
 						<button onClick={(evt) => {this.loadCardData(evt)}}>Scan</button>
 					
 				</div>
 				{this.state.loading && <i>Loading..</i>}
-				<div className='new-card-div'>
-					{this.state.newCard && <div>
-						<div><img src= {this.state.image} width={500} height={300}/></div>
+				
+					{this.state.newCard && <div className='new-card-div'>
+						<div><img src= {this.state.image} width={470} height={250}/></div>
 						<div className='new-card-form'>
-							<div id='name-div'>
-								<div>
-									<p>First Name</p>
+							<section>
+								<span> First name</span>
+								
 									<input type = 'text' value={this.state.fname} name='fname' 
-											onChange={(evt) => {this.handleChange('fname',evt.target.value)}}/>
-								</div>
-								<div>
-									<p>Last Name</p>
-									<input type='text' value={this.state.lname} name='lname' 
-											onChange={(evt) => {this.handleChange('lname',evt.target.value)}}/><br/>
-								</div>
-							</div>	
-							
-							<p>Phone number:</p>
-							{this.state.phone_number.map(phone =>{
-								// console.log(phone.phone_id)
-								return <input key = {phone.phone_id} value={phone.phone_num} 
-										onChange={(evt) => {this.handlePhoneChange(phone.phone_id,evt)}}/>
-							})}
-							<br/>
-							<p>Email id:</p>
-							{this.state.email_id.map(email =>{
-								// console.log(email.id)
-								return <input key = {email.id} value={email.email_id} 
-										onChange={(evt) => {this.handleEmailChange(email.id,evt)}}/>
-							})}
-							<p>Job title:</p>
-							<input type = 'text' value={this.state.jobTitle} name='jobTitle' 
-									onChange={(evt) => {this.handleChange('jobTitle',evt.target.value)}}/><br/>
-							<p>Company Name:</p>
-							<input type = 'text' value={this.state.company} name='company' 
-									onChange={(evt) => {this.handleChange('company',evt.target.value)}}/><br/>
-							<p>Description:</p>
-							<textarea 
-								type="text" 
-								value={this.state.description} 
-								name = 'description'
-								onChange={(evt) => this.handleChange('description', evt.target.value)}
-							/>
-							<button onClick={(evt) => {this.handleSaveChanges(evt)}}>Save</button>
+												onChange={(evt) => {this.handleChange('fname',evt.target.value)}}/>
+								
+							</section>
+							<section>
+								<span>Last name</span>
+									
+										<input type='text' value={this.state.lname} name='lname' 
+													onChange={(evt) => {this.handleChange('lname',evt.target.value)}}/>
+									
+							</section>
+							<section>
+								<span>Phone number:</span>
+								{(this.state.phone_number.length>0)?
+										this.state.phone_number.map(phone =>{
+											// console.log(phone.phone_id)
+											return <input key = {phone.phone_id} value={phone.phone_num} 
+													onChange={(evt) => {this.handlePhoneChange(phone.phone_id,evt)}}/>
+										}):
+										<input key='np'onChange={(evt) => {this.handleNewPhoneChange(evt)}}/>
+								}
+								<br/>
+							</section>
+							<section>
+							<span>Email id:</span>
+								{(this.state.email_id.length > 0)?
+										this.state.email_id.map(email =>{
+											// console.log(email.id)
+											return <input key = {email.id} value={email.email_id} 
+													onChange={(evt) => {this.handleEmailChange(email.id,evt)}}/>
+										}):
+										<input key='ne'onChange={(evt) => {this.handleNewEmailChange(evt)}}/>
+								}
+								<br/>
+							</section>
+							<section>
+								<span>Job title:</span>
+								<input type = 'text' value={this.state.jobTitle} name='jobTitle' 
+										onChange={(evt) => {this.handleChange('jobTitle',evt.target.value)}}/><br/>
+							</section>
+							<section>
+								<span>Company Name:</span>
+								<input type = 'text' value={this.state.company} name='company' 
+										onChange={(evt) => {this.handleChange('company',evt.target.value)}}/><br/>
+							</section>
+							<section >
+								<span>Description:</span>
+								<textarea 
+									type="text" 
+									value={this.state.description} 
+									name = 'description'
+									onChange={(evt) => this.handleChange('description', evt.target.value)}
+								/><br/>
+							</section>
+							<section className='button-div'>
+								<button onClick={(evt) => {this.handleSaveChanges(evt)}}>Save</button>
+								<button onClick={(evt) => {this.handleCancelClick(evt)}}>Cancel</button>
+							</section>
 						</div>
 					</div>}
-				
 				</div>
-				</div>
-				
-				
-				
 			</div>
 			</div>
         )

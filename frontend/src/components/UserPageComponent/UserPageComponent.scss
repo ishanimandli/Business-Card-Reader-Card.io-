@@ -44,11 +44,17 @@
 .card-container{
     display: inline-flex;
     flex-direction: column;
-    width: inherit;
+    width: -webkit-fill-available;
+    padding: 37px;
 }
 .search-bar{
     display: flex;
     width: inherit;
     justify-content: center;
     align-items: center;
+}
+.card-header-div{
+    display: flex;
+    justify-content: start;
+    margin-bottom: 0px;
 }

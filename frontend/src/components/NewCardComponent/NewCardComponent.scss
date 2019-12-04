@@ -1,5 +1,6 @@
 #file-uploader-input{
     border: 0px;
+    margin: 0px;
 }
 .login-form{
   width: inherit;
@@ -9,13 +10,45 @@
 .new-card-div{
     display: flex;
     flex-direction: column;
+    margin: 25px;
+    border: 0.8px solid #eeee;
+    padding-top: 24px;
 }
 .new-card-form{
+    display: block;
+    text-align: initial;
+    padding: 10px 52px;
+}
+.name-container{
+    display: flex;
+}
+.name-div{
+    display: inline;
+}
+.upload-div{
+    margin: 30px 25px;
+    border: 0.8px solid #eeee;
+    padding: 10px;
+}
+.new-card-form section {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    align-items: baseline;
+    margin-bottom: 0.5em;
 }
-#name-div{
-    display: inline;
+.new-card-form section span {
+    line-height: 0.55em;
+    margin: 16px 0px;
+}
+.new-card-form input {
+    margin: 0;
+    /* width: 100%; */
+}
+
+section.description textarea {
+    width: 100%;
+}
+
+section.button-div{
+    flex-direction: row;
+    justify-content: space-around;
 }

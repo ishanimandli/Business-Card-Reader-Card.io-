@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { getUserProfile,setUserProfile,updatePassword } from '../../services/userService'
 import { Link } from 'react-router-dom'
 import ReactModal from 'react-modal'
-
+import HeaderComponent from '../HeaderComponent/HeaderComponent.js'
+import './UserProfileComponent.scss'
 export default class Profile extends Component{
     constructor(props){
         super(props)
@@ -166,30 +167,39 @@ export default class Profile extends Component{
     render(){
         return (
             <div>
-                <form>
-                    <label>Name:</label>
-                    <input type='text' value={this.state.fname} onChange={(evt) =>{this.handleFirstNameChange(evt)}}></input>
-                    <input type='text' value={this.state.lname} onChange={(evt) =>{this.handleLastNameChange(evt)}}></input><br/>
-                    <label>Phone number:</label>
-                    <input type='text' value={this.state.phone} onChange={(evt) =>{this.handlePhoneChange(evt)}}></input><br/>
-                    <label>Email id:</label>
-                    <input type='email' value={this.state.email} onChange={(evt) =>{this.handleEmailChange(evt)}}></input><br/>
-                    <p>Do you want to <a onClick={this.handleChangePassword}>change password</a>?</p>
-                    <button disabled = {!this.state.contentChanged} onClick = {(evt) => {this.handleSaveProfile(evt)}}>Save Cahnges</button>
-                </form>
-                <ReactModal
-                    isOpen={this.state.openPasswordModal}>
-                    
-                        <p>User name</p>
-                        <input type="text" value={this.state.username} onChange={(evt) => this.handleUsernameChange(evt)}></input><br/>
-                        <p>Old password</p>
-                        <input type="text" value={this.state.oldPassword} onChange={(evt) => this.handleOldPasswordChange(evt)}></input><br/>
-                        <p>New password</p>
-                        <input type="text" value={this.state.newPassword} onChange={(evt) => this.handleNewPasswordChange(evt)}></input><br/>
-                        <button onClick={(evt) => {this.handleUpdatePassword(evt)}}>Update password</button>
-                   
-                </ReactModal>
+                 <HeaderComponent user={localStorage.getItem('name')}></HeaderComponent>
+                 <div className='login-form'>
+                    <div className='form'>
+                        <div className='user-profile-div'>
+                            <form>
+                                <span>Name:</span>
+                                <input type='text' value={this.state.fname} onChange={(evt) =>{this.handleFirstNameChange(evt)}}/>
+                                <input type='text' value={this.state.lname} onChange={(evt) =>{this.handleLastNameChange(evt)}}/><br/>
+                                <span>Phone number:</span>
+                                <input type='text' value={this.state.phone} onChange={(evt) =>{this.handlePhoneChange(evt)}}/><br/>
+                                <span>Email id:</span>
+                                <input type='email' value={this.state.email} onChange={(evt) =>{this.handleEmailChange(evt)}}/><br/>
+                                <p>Do you want to <a onClick={this.handleChangePassword}>change password</a>?</p>
+                                <button disabled = {!this.state.contentChanged} onClick = {(evt) => {this.handleSaveProfile(evt)}}>Save Cahnges</button>
+                            </form>
+                            <ReactModal
+                                isOpen={this.state.openPasswordModal}>
+                                
+                                    <p>User name</p>
+                                    <input type="text" value={this.state.username} onChange={(evt) => this.handleUsernameChange(evt)}></input><br/>
+                                    <p>Old password</p>
+                                    <input type="text" value={this.state.oldPassword} onChange={(evt) => this.handleOldPasswordChange(evt)}></input><br/>
+                                    <p>New password</p>
+                                    <input type="text" value={this.state.newPassword} onChange={(evt) => this.handleNewPasswordChange(evt)}></input><br/>
+                                    <button onClick={(evt) => {this.handleUpdatePassword(evt)}}>Update password</button>
+                            
+                            </ReactModal>
+                        </div>
+                        
+                    </div>
             </div>
+            </div>
+            
         )
     }
 }

@@ -46,7 +46,7 @@ export default class UserPageComponent extends Component{
 									if(a.name > b.name) { return 1; }
 									return 0;
 								}),
-				company_list: response.company_list
+				company_list: response.company_list.sort()
 			})
 			// console.log(response.company_list)
 			this.originalCardList = this.state.listOfcards
@@ -85,7 +85,7 @@ export default class UserPageComponent extends Component{
 				searchName: "",
 				searchBy:true
 			})
-			
+
 		}
 	}
 	async handleSelectedValue(evt){
@@ -108,7 +108,7 @@ export default class UserPageComponent extends Component{
 		return (
 		
 			<select className='company-search'onChange={(evt) => {this.handleSelectedValue(evt)}}>
-				<option ></option>
+				<option >Select Company......</option>
 				{companies && companies.length > 0 &&
 				companies.map(company => {
 					return <option key={company} value={company}>{company}</option>
@@ -157,9 +157,9 @@ export default class UserPageComponent extends Component{
 					<div className="login-page">
 						<div className="form">
 							<div className='new-card-btn'>
-								<button id='new-card'
+								<button 
 										onClick={(evt) => {this.handleNewClick(evt)}}>
-												+
+												New Card
 								</button>
 							</div>
 						
@@ -184,9 +184,9 @@ export default class UserPageComponent extends Component{
 								<button onClick={(evt) => {this.handleCancelClick(evt)}}>Cancel</button>
 							</div>
 							<div className='card-container'>
-								
+								<h1 className='card-header-div'>Cards</h1>
 								<ul className='card-list-container'>
-								{(this.state.listOfcards.sort()
+								{(this.state.listOfcards
 									.filter(card => card.name.toLowerCase().includes(this.state.searchName))
 									.map(cardToShow => <li className='card-list' key={cardToShow.id} 
 															onClick={(evt) => this.handleRecordClick(evt,cardToShow.id)}>

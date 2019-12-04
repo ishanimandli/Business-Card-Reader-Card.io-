@@ -12,7 +12,7 @@ export default class HeaderComponent extends Component{
         return(
             <div className='header-container'>
                 <div className='app-logo-conainer'>
-                    <span className='logo'>card.io</span>
+                    <span className='logo' onClick={(evt) => window.location.href='/#/userPage'}>card.io</span>
                 </div>
                 <div className='profile-container'>
                     
