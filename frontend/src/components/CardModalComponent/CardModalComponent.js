@@ -127,85 +127,77 @@ export default class CardModal extends Component{
     render(){
         // const { fname, lname } = this.state.cardData;
         return (
-            <div className='login-page'>
-                <div className='form'>
-                <ReactModal 
-						isOpen={this.props.showCardModal}
-						>
-                            <div className='close-tag'>
-                                <button className='close-btn' id='new-card'
-                                        onClick={this.handleCloseModal}>X</button></div>
-                            <div className='card-container'>
-								<span>Name: </span>
-                                <div>
-                                    <input
-                                        type="text"
-                                        defaultValue={this.state.fname}
-                                        // onChange={(evt) => this.handlefnameChange(evt)}
-
-                                        onChange={(evt) => this.handleFieldChange('fname', evt.target.value)}
-                                    />
-                                    <input 
-                                        type="text" 
-                                        defaultValue={this.state.lname} 
-                                        onChange={(evt) => this.handleFieldChange('lname', evt.target.value)}
-                                    />
-                                </div>
-								
-								<span>Phone number:</span>
-                                <div>
-                                    {this.state.phones.map(phone =>{
-                                        return<input key={phone.phone_id} type="text" value={phone.phone_num} onChange={(evt) => this.handlePhoneChange(evt,phone.phone_id)}></input>
-                                    })}
-                                </div>
-								
-								<br/>
-								<span>Email id:</span>
-                                <div>
-                                    {this.state.emails.map(email =>{
-                                        return<input key={email.id} type="email" value={email.email_id} onChange={(evt) => this.handleEmailChange(evt,email.id)}></input>
-                                    })}
-                                </div>
-								
-								<br/>
-                                <span>Company name:</span>
-                                <input 
-                                    type="text" 
-                                    value={this.state.companyName} 
-                                    onChange={(evt) => this.handleFieldChange('companyName', evt.target.value)}
-                                />
-                                <br/>				
-                                <span>Job title:</span>
-                                <input 
-                                    type="text" 
-                                    value={this.state.jobTitle} 
-                                    onChange={(evt) => this.handleFieldChange('jobTilte', evt.target.value)}
-                                />
-                                <br/>
-                                <span>Description:</span>
-                                <textarea 
-                                    type="text" 
-                                    value={this.state.description} 
-                                    onChange={(evt) => this.handleFieldChange('description', evt.target.value)}
-                                />
-                                <br/>
-                                <div>
-                                    <button disabled={!this.state.dataChanged} 
-                                            onClick={(evt) => {this.handleUpdateData(evt)}}>
-                                                Update
-                                    </button>
-                                    <button onClick={(evt) =>{ 
-                                                    if (window.confirm('Are you sure you wish to delete this item?')) 
-                                                    this.handleDeleteCard(evt)}}>
-                                                Delete Card
-                                    </button>
-                                </div>
-                                
-                                
-							</div>
-					</ReactModal>
-                </div>
-            </div>
-        )
+                <ReactModal isOpen={this.props.showCardModal}>
+                    <div id='no-border-div' className='new-card-div'>
+                        <div id='no-padding-bottom' className='new-card-btn'>
+                                    <button onClick={this.handleCloseModal}>X</button>
+                        </div>
+                        <div className='new-card-form'>
+                                    <section>
+                                        <span>First name</span>
+                                        <input
+                                            type="text"
+                                            defaultValue={this.state.fname}
+                                            onChange={(evt) => this.handleFieldChange('fname', evt.target.value)}
+                                        />
+                                    </section>
+                                    <section>
+                                        <span>Last name</span>
+                                        <input 
+                                            type="text" 
+                                            defaultValue={this.state.lname} 
+                                            onChange={(evt) => this.handleFieldChange('lname', evt.target.value)}
+                                        />
+                                    </section>
+                                    <section>
+                                        <span>Phone number</span>
+                                        {this.state.phones.map(phone =>{
+                                            return<input key={phone.phone_id} type="text" value={phone.phone_num} onChange={(evt) => this.handlePhoneChange(evt,phone.phone_id)}></input>
+                                        })}
+                                    </section>
+                                    <section>
+                                        <span>Email id</span>
+                                        {this.state.emails.map(email =>{
+                                            return<input key={email.id} type="email" value={email.email_id} onChange={(evt) => this.handleEmailChange(evt,email.id)}></input>
+                                        })}
+                                    </section>
+                                    <section>
+                                        <span>Job title</span>
+                                        <input 
+                                            type="text" 
+                                            value={this.state.jobTitle} 
+                                            onChange={(evt) => this.handleFieldChange('jobTilte', evt.target.value)}
+                                        />
+                                    </section>
+                                    <section>
+                                        <span>Company name</span>
+                                        <input 
+                                            type="text" 
+                                            value={this.state.companyName} 
+                                            onChange={(evt) => this.handleFieldChange('companyName', evt.target.value)}
+                                        />
+                                    </section>
+                                    <section>
+                                        <span>Description</span>
+                                        <textarea 
+                                            type="text" 
+                                            value={this.state.description} 
+                                            onChange={(evt) => this.handleFieldChange('description', evt.target.value)}
+                                        />
+                                    </section>
+                                    <section className='button-div'>
+                                        <button disabled={!this.state.dataChanged} 
+                                                onClick={(evt) => {this.handleUpdateData(evt)}}>
+                                                    Update
+                                        </button>
+                                        <button onClick={(evt) =>{ 
+                                                        if (window.confirm('Are you sure you wish to delete this item?')) 
+                                                        this.handleDeleteCard(evt)}}>
+                                                    Delete Card
+                                        </button>
+                                    </section>
+                        </div>
+                    </div>
+					</ReactModal>)
     }
 }

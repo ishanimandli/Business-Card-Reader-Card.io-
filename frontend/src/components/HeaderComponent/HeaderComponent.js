@@ -12,24 +12,26 @@ export default class HeaderComponent extends Component{
         return(
             <div className='header-container'>
                 <div className='app-logo-conainer'>
-                    <span className='logo' onClick={(evt) => window.location.href='/#/userPage'}>card.io</span>
+                    <span className='logo' onClick={(evt) => window.location.href='/'}>card.io</span>
                 </div>
-                <div className='profile-container'>
+                {(localStorage.getItem('name')) && <div className='profile-container'>
                     
                     <ul className='nav-option'>
                         <li className='user-profile'>
                             Welcome, {this.props.user}
                         </li>
                         <li className ='user-profile profile-focus' 
-                            onClick={(evt) => {window.location.href = '/userProfile'}}>
+                            onClick={(evt) => {window.location.href = '/#/userProfile'}}>
                                Profile 
                         </li>
                         <li className ='user-profile profile-focus' onClick={(evt) => this.handleLogoutClick(evt)}>
                             Logout
                         </li>
                     </ul>
-                    
-                </div>
+                    </div>
+                    }
+                
+                
             </div>
         )
     }

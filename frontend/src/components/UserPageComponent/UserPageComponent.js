@@ -156,52 +156,51 @@ export default class UserPageComponent extends Component{
 					<HeaderComponent user={localStorage.getItem('name')}></HeaderComponent>
 					<div className="login-page">
 						<div className="form">
-							<div className='new-card-btn'>
-								<button 
-										onClick={(evt) => {this.handleNewClick(evt)}}>
-												New Card
-								</button>
+							<div id='no-border-div' className='upload-div '>
+								<div className='new-card-btn'>
+									<button 
+											onClick={(evt) => {this.handleNewClick(evt)}}>
+													New Card
+									</button>
+								</div>
+							
+								<div className='search-bar'>
+									<select className='company-search' onChange={(evt) =>{ this.handleSearchBy(evt)}} defaultValue='name'>
+										<option key='name'>
+												By Name
+										</option>
+										<option key='company'>
+												By Company
+										</option>
+									</select>
+									{(this.state.searchBy) ? 
+											<input type='text' value={this.state.searchName} 
+											placeholder='Search'
+											onChange={(evt) => this.handleSearchNameChange(evt)}/> : 
+											
+											this.showCompanyList()
+									}
+									
+									
+									<button onClick={(evt) => {this.handleCancelClick(evt)}}>Cancel</button>
+								</div>
+								<div className='card-container'>
+									<h1 className='card-header-div'>Cards</h1>
+									<ul className='card-list-container'>
+									{(this.state.listOfcards
+										.filter(card => card.name.toLowerCase().includes(this.state.searchName))
+										.map(cardToShow => <li className='card-list' key={cardToShow.id} 
+																onClick={(evt) => this.handleRecordClick(evt,cardToShow.id)}>
+																{cardToShow.name}
+																</li>)
+									)}
+									</ul>
+								</div>
+								{this.state.showModal && <CardModal card_id={this.state.cardId} showCardModal={this.state.showModal} onCloseModal={this.handleCloseModal}/>}
 							</div>
-						
-							<div className='search-bar'>
-								<select className='company-search' onChange={(evt) =>{ this.handleSearchBy(evt)}} defaultValue='name'>
-									<option key='name'>
-											By Name
-									</option>
-									<option key='company'>
-											By Company
-									</option>
-								</select>
-								{(this.state.searchBy) ? 
-										<input type='text' value={this.state.searchName} 
-										placeholder='Search'
-										onChange={(evt) => this.handleSearchNameChange(evt)}/> : 
-										
-										this.showCompanyList()
-								}
 								
-								
-								<button onClick={(evt) => {this.handleCancelClick(evt)}}>Cancel</button>
-							</div>
-							<div className='card-container'>
-								<h1 className='card-header-div'>Cards</h1>
-								<ul className='card-list-container'>
-								{(this.state.listOfcards
-									.filter(card => card.name.toLowerCase().includes(this.state.searchName))
-									.map(cardToShow => <li className='card-list' key={cardToShow.id} 
-															onClick={(evt) => this.handleRecordClick(evt,cardToShow.id)}>
-															{cardToShow.name}
-															</li>)
-								)}
-								</ul>
-							</div>
-							{this.state.showModal && <CardModal card_id={this.state.cardId} showCardModal={this.state.showModal} onCloseModal={this.handleCloseModal}/>}
 						</div>
-					
 					</div>
-					{/* <div><a onClick={(evt) => {this.setState({clickedProfile:true})}}>Your Profile</a></div>
-					<div><button onClick={(evt) => this.handleLogoutClick(evt)}>Logout</button></div> */}
-					
 				</div>)
 	}
 	

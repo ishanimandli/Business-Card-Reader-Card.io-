@@ -164,34 +164,89 @@ export default class Profile extends Component{
             
         }
     }    
+    handleCloseModal(evt){
+        if(evt){
+            this.setState({
+                openPasswordModal:false
+            })
+        }
+    }
     render(){
         return (
             <div>
                  <HeaderComponent user={localStorage.getItem('name')}></HeaderComponent>
                  <div className='login-form'>
                     <div className='form'>
-                        <div className='user-profile-div'>
-                            <form>
-                                <span>Name:</span>
-                                <input type='text' value={this.state.fname} onChange={(evt) =>{this.handleFirstNameChange(evt)}}/>
-                                <input type='text' value={this.state.lname} onChange={(evt) =>{this.handleLastNameChange(evt)}}/><br/>
-                                <span>Phone number:</span>
-                                <input type='text' value={this.state.phone} onChange={(evt) =>{this.handlePhoneChange(evt)}}/><br/>
-                                <span>Email id:</span>
-                                <input type='email' value={this.state.email} onChange={(evt) =>{this.handleEmailChange(evt)}}/><br/>
-                                <p>Do you want to <a onClick={this.handleChangePassword}>change password</a>?</p>
-                                <button disabled = {!this.state.contentChanged} onClick = {(evt) => {this.handleSaveProfile(evt)}}>Save Cahnges</button>
-                            </form>
-                            <ReactModal
-                                isOpen={this.state.openPasswordModal}>
-                                
-                                    <p>User name</p>
-                                    <input type="text" value={this.state.username} onChange={(evt) => this.handleUsernameChange(evt)}></input><br/>
-                                    <p>Old password</p>
-                                    <input type="text" value={this.state.oldPassword} onChange={(evt) => this.handleOldPasswordChange(evt)}></input><br/>
-                                    <p>New password</p>
-                                    <input type="text" value={this.state.newPassword} onChange={(evt) => this.handleNewPasswordChange(evt)}></input><br/>
-                                    <button onClick={(evt) => {this.handleUpdatePassword(evt)}}>Update password</button>
+                        <div id='no-border-div' className='new-card-div'>
+                            <div className='new-card-form'>
+                                <section>
+                                    <span>First name</span>
+                                    <input type='text' 
+                                        value={this.state.fname} 
+                                        onChange={(evt) =>{this.handleFirstNameChange(evt)}}/>
+                                </section>
+                                <section>
+                                    <span>Last name</span>
+                                    <input type='text' 
+                                        value={this.state.lname} 
+                                        onChange={(evt) =>{this.handleLastNameChange(evt)}}/><br/>
+                                </section>
+                                <section>
+                                    <span>Phone number</span>
+                                    <input type='text' 
+                                        value={this.state.phone} 
+                                        onChange={(evt) =>{this.handlePhoneChange(evt)}}/>
+                                </section>
+                                <section>
+                                    <span>Email id</span>
+                                    <input type='email' 
+                                        value={this.state.email} 
+                                        onChange={(evt) =>{this.handleEmailChange(evt)}}/>
+                                </section>
+                                <section>
+                                    <span>Do you want to <a className='profile-focus' onClick={this.handleChangePassword}>change password</a>?</span>
+                                </section>
+                                <section className='button-div'>
+                                    <button disabled = {!this.state.contentChanged} 
+                                        onClick = {(evt) => {this.handleSaveProfile(evt)}}>
+                                            Save Cahnges
+                                    </button>
+                                </section>   
+                            </div>
+                            
+                            <ReactModal isOpen={this.state.openPasswordModal}>
+                                <div id='no-border-div' className='new-card-div'>
+                                    <div id='no-padding-bottom' className='new-card-btn'>
+                                        <button onClick={(evt) =>{this.handleCloseModal(evt)}}>X</button>
+                                    </div>
+                                    <div className='new-card-form'>
+                                        <section>
+                                            <span>Username</span>
+                                            <input type="text" 
+                                                value={this.state.username} 
+                                                onChange={(evt) => this.handleUsernameChange(evt)}/>
+                                        </section>
+                                        <section>
+                                            <span>Old password</span>
+                                            <input type="text" 
+                                                value={this.state.oldPassword} 
+                                                onChange={(evt) => this.handleOldPasswordChange(evt)}/>
+                                        </section>
+                                        <section>
+                                            <span>New password</span>
+                                            <input type="text" 
+                                                value={this.state.newPassword} 
+                                                onChange={(evt) => this.handleNewPasswordChange(evt)}/>
+                                        </section>
+                                        <section className='button-div'>
+                                            <button onClick={(evt) => {this.handleUpdatePassword(evt)}}>
+                                                Update password
+                                            </button>
+                                        </section>
+                                    </div>
+                                </div>
+                                 
+                                    
                             
                             </ReactModal>
                         </div>

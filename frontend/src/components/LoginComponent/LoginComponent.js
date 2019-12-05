@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom'
 import './LoginComponent.scss'
 import { Link } from 'react-router-dom'
 import { userLogin } from '../../services/userService'
+import HeaderComponent from '../HeaderComponent/HeaderComponent.js'
 
 export default class LoginComponent extends Component {
 
@@ -57,7 +58,7 @@ export default class LoginComponent extends Component {
 
     render() {
         const { redirect, showError } = this.state
-        if(redirect || localStorage.getItem('cardUser')) {
+        if(redirect || localStorage.getItem('token')) {
             return <Redirect
             to={{
               pathname: "/userPage"
@@ -65,17 +66,44 @@ export default class LoginComponent extends Component {
           />
         }
         return(
-            <div className="login-page">
+            <div>
+                <HeaderComponent></HeaderComponent>
+                <div className="login-page">
                 <div className="form">
                     <section className="form-title">Card.io</section>
                     <section className="login-form">
-                    <input type="text" placeholder="username" value={this.state.username} onChange={(ev) => this.handleUserNameChange(ev)}/><br/>
-                    <input type="password" placeholder="password" value={this.state.password} onChange={(ev) => this.handlePasswordChange(ev)}/><br/>
-                    <button onClick={(event) => this.onSubmit(event)}>login</button>
-                    <p className="message">Not registered? <Link to='/register'>Create an account</Link></p>
+                        <div id='no-border-div' className='new-card-div login-form-div' >
+                            <div className='new-card-form'>
+                                <section>
+                                    <input type="text" 
+                                        placeholder="username" 
+                                        value={this.state.username} 
+                                        onChange={(ev) => this.handleUserNameChange(ev)}/>
+                                </section>
+                                <section>
+                                    <input type="password" 
+                                        placeholder="password" 
+                                        value={this.state.password} 
+                                        onChange={(ev) => this.handlePasswordChange(ev)}/>
+                                </section>
+                                <section className='button-div'>
+                                <button onClick={(event) => this.onSubmit(event)}>login</button>
+                                </section>
+                                <section>
+                                    <span>Not registered? <Link to='/register'>Create an account</Link>
+                                    </span>
+                                </section>
+                            </div> 
+                        </div>
+                    <br/>
+                    <br/>
+                   
+                   
                     </section>
                 </div>
                 </div>
+            </div>
+            
         )
     }
 }

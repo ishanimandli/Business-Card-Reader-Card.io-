@@ -50,3 +50,13 @@ ReactModal{
     color: #bababa;
     
 }
+#no-padding-bottom{
+    padding: 0px;
+}
+#no-padding-bottom button{
+    border:none;
+}
+ReactModal.button:hover{
+    background: white;
+    color: #6b6b6d;
+}

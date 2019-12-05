@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import { userSignup } from '../../services/userService'
 import { Redirect } from 'react-router-dom'
-
+import HeaderComponent from '../HeaderComponent/HeaderComponent.js'
 export default class RegistrationComponent extends Component {
     constructor(props){
         super(props)
@@ -104,20 +104,58 @@ export default class RegistrationComponent extends Component {
             return <Redirect to = "/" />
         }
         return(
-            <div className="login-page">
+            <div>
+                <HeaderComponent></HeaderComponent>
+                <div className="login-page">
                 <div className="form">
                     <section className="form-title">Card.io</section>
-                    <form className="register-form">
-                    <input type="text" placeholder="first name" value={this.state.fname} onChange={(event) => this.handleFirstNameChange(event)}/>
-                    <input type="text" placeholder="last name" value={this.state.lname} onChange={(event) => this.handleLastNameChange(event)}/>
-                    <input type="text" placeholder="username" value={this.state.username} onChange={(event) => this.handleUsernameChange(event)}/>
-                    <input type="password" placeholder="password" value={this.state.password} onChange={(event) => this.handlePasswordChange(event)}/>
-                    <input type="text" placeholder="email address" value={this.state.email} onChange={(event) => this.handleEmailChange(event)}/>
-                    <input type="text" placeholder="phone number" value={this.state.phone} onChange={(event) => this.handlePhoneNumberChange(event)}/>
-                    <button onClick={(event) => this.onCreate(event)}>create</button>
-                    </form>
+                    <div id='no-border-div' className='new-card-div login-form-div'>
+                        <div className='new-card-form'>
+                            <section>
+                                <input type="text" 
+                                    placeholder="first name" 
+                                    value={this.state.fname} 
+                                    onChange={(event) => this.handleFirstNameChange(event)}/>
+                            </section>
+                            <section>
+                                <input type="text" 
+                                    placeholder="last name" 
+                                    value={this.state.lname} 
+                                    onChange={(event) => this.handleLastNameChange(event)}/>
+                            </section>
+                            <section>
+                                <input type="text" 
+                                    placeholder="username" 
+                                    value={this.state.username} 
+                                    onChange={(event) => this.handleUsernameChange(event)}/>
+                            </section>
+                            <section>
+                                <input type="password" 
+                                    placeholder="password" 
+                                    value={this.state.password} 
+                                    onChange={(event) => this.handlePasswordChange(event)}/>
+                            </section>
+                            <section>
+                                <input type="text" 
+                                    placeholder="email address" 
+                                    value={this.state.email} 
+                                    onChange={(event) => this.handleEmailChange(event)}/>
+                            </section>
+                            <section>
+                                <input type="text" 
+                                    placeholder="phone number" 
+                                    value={this.state.phone} 
+                                    onChange={(event) => this.handlePhoneNumberChange(event)}/>
+                            </section>
+                            <section className='button-div'>
+                                <button onClick={(event) => this.onCreate(event)}>create</button>
+                            </section>
+                        </div>
+                    </div>    
                 </div>
                 </div>
+            </div>
+            
         )
     }
 }
