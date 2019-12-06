@@ -215,10 +215,11 @@ export default class Profile extends Component{
                             </div>
                             
                             <ReactModal isOpen={this.state.openPasswordModal}>
-                                <div id='no-border-div' className='new-card-div'>
-                                    <div id='no-padding-bottom' className='new-card-btn'>
-                                        <button onClick={(evt) =>{this.handleCloseModal(evt)}}>X</button>
+                                    <div>
+                                        <div className="cross" onClick={(evt) =>{this.handleCloseModal(evt)}}>X</div>
                                     </div>
+                                <div id='no-border-div' className='new-card-div'>
+                                    
                                     <div className='new-card-form'>
                                         <section>
                                             <span>Username</span>

@@ -1,9 +1,0 @@
-env/
-*.pyc
-business_cards
-frontend/node_modules
-uploadCards/
-job-phrase-list.csv
-job-title.csv
-account_sid = 'AC239ef8cc16ed8e91c0d84301ae24504c'
-auth_token = '3914ceb0e4f71bc8e8602aeae17d7def'
