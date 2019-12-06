@@ -4,7 +4,7 @@ import './HeaderComponent.scss'
 export default class HeaderComponent extends Component{
     handleLogoutClick(evt){
 		if(evt){
-			localStorage.removeItem('token');
+			localStorage.clear();
 			window.location.href = '/'
 		}
 	}

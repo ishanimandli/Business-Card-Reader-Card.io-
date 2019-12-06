@@ -23,7 +23,7 @@ export async function getCardData(){
                             });
     if(response.status===200){
         // console.log(response)
-        return {data: response.data.cards, company_list: response.data.comapny_list, status: response.data.status}
+        return {data: response.data.cards, company_list: response.data.company_list, status: response.data.status}
     }
     else{
         return {message: response.message, status: response.status}

@@ -13,8 +13,14 @@ body {
 
 div[role="dialog"]{
     width: 500px;
-    left: 25%;
+    left: 31% !important;
+    border-radius: 7px !important;
 }
+
+div[class*="ReactModal__Overlay"]{
+  background-color: rgba(0,0,0,0.2) !important
+}
+
 button{
   font-family: "Roboto", sans-serif;
   font-weight: bold;
@@ -28,14 +34,16 @@ button{
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
   cursor: pointer;
+  text-transform: capitalize;
   min-width: 100px;
+  border-radius: 4px;
 }
 button:hover{
   background: #2d62af;
   color: white;
   font-weight: 600;
 }
-input, textarea {
+input, textarea, select {
     font-family: "Roboto", sans-serif;
     outline: 0;
     background: transparent;

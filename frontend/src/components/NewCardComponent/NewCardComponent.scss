@@ -17,7 +17,7 @@
 .new-card-form{
     display: block;
     text-align: initial;
-    padding: 10px 52px;
+    padding: 10px;
 }
 .name-container{
     display: flex;
@@ -26,7 +26,6 @@
     display: inline;
 }
 .upload-div{
-    margin: 30px 25px;
     border: 0.8px solid #eeee;
     padding: 10px;
 }
@@ -37,11 +36,15 @@
 }
 .new-card-form section span {
     line-height: 0.55em;
+    font-size: 14px;
+    color: #222222;
     margin: 16px 0px;
 }
 .new-card-form input {
     margin: 0;
-    /* width: 100%; */
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 section.description textarea {
@@ -50,5 +53,5 @@ section.description textarea {
 
 section.button-div{
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
 }

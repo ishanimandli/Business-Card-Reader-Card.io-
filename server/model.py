@@ -55,14 +55,14 @@ class Card(db.Model):
     # Relationship definition
     user = db.relationship('User',
                            backref='user_cards')
-    company = db.relationship('Company_info',
+    company = db.relationship('CompanyInfo',
                             backref='company_cards')
-    phones = db.relationship('Phone_info',
+    phones = db.relationship('PhoneInfo',
                             backref='card_phones')
-    email = db.relationship('Email_info',
+    email = db.relationship('EmailInfo',
                             backref='card_emails')
 
-    def deleteCard(self):
+    def remove_card(self):
         """Delete relationships to card, then delete card from db."""
 
         for phone in self.phones:
@@ -73,17 +73,9 @@ class Card(db.Model):
 
         db.session.delete(self)
 
-    # def __init__(self, user_id,fname,lname,company_id,jobTitle,discription):
-
-    #     self.user_id = user_id
-    #     self.first_name = fname
-    #     self.last_name = lname
-    #     self.company_id = company_id
-    #     self.job_title = jobTitle
-    #     self.discription = discription
 
 
-class Company_info(db.Model):
+class CompanyInfo(db.Model):
     """ Creates company_info table in database and define relationship with card table. """
 
     __tablename__ = "company_info"
@@ -96,12 +88,9 @@ class Company_info(db.Model):
                            nullable =False,
                            unique = True)
     
-    # def __init__(self, company):
-    #     self.company_name = company
+    
 
-
-
-class Phone_info(db.Model):
+class PhoneInfo(db.Model):
     """ Creates phone_no_info table in database and define relationship with card table. """
 
     __tablename__ = "phone_no_info"
@@ -118,7 +107,7 @@ class Phone_info(db.Model):
 
 
 
-class Email_info(db.Model):
+class EmailInfo(db.Model):
     """ Creates phone_no_info table in database and define relationship with card table. """
 
     __tablename__ = "email_info"

@@ -128,9 +128,9 @@ export default class CardModal extends Component{
         // const { fname, lname } = this.state.cardData;
         return (
                 <ReactModal isOpen={this.props.showCardModal}>
-                    <div id='no-border-div' className='new-card-div'>
-                        <div id='no-padding-bottom' className='new-card-btn'>
-                                    <button onClick={this.handleCloseModal}>X</button>
+                    <div>
+                        <div className="cross" onClick={this.handleCloseModal}>
+                              x      
                         </div>
                         <div className='new-card-form'>
                                     <section>
@@ -190,7 +190,7 @@ export default class CardModal extends Component{
                                                 onClick={(evt) => {this.handleUpdateData(evt)}}>
                                                     Update
                                         </button>
-                                        <button onClick={(evt) =>{ 
+                                        <button className="delete-btn" onClick={(evt) =>{ 
                                                         if (window.confirm('Are you sure you wish to delete this item?')) 
                                                         this.handleDeleteCard(evt)}}>
                                                     Delete Card

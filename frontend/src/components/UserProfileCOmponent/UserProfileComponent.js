@@ -228,13 +228,13 @@ export default class Profile extends Component{
                                         </section>
                                         <section>
                                             <span>Old password</span>
-                                            <input type="text" 
+                                            <input type="password" 
                                                 value={this.state.oldPassword} 
                                                 onChange={(evt) => this.handleOldPasswordChange(evt)}/>
                                         </section>
                                         <section>
                                             <span>New password</span>
-                                            <input type="text" 
+                                            <input type="password" 
                                                 value={this.state.newPassword} 
                                                 onChange={(evt) => this.handleNewPasswordChange(evt)}/>
                                         </section>

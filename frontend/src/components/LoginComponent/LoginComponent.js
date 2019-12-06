@@ -15,7 +15,7 @@ export default class LoginComponent extends Component {
             password: '',
             redirect: false
         }
-        localStorage.clear()
+        
     }
     handleUserNameChange (ev) {
         if(ev) {

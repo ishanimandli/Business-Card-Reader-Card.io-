@@ -1,7 +1,7 @@
 from flask import Flask, redirect, render_template, request, session, flash, jsonify, current_app
-from model import db, User, Card, Company_info, Phone_info, Email_info,connect_to_db
+from model import db, User, Card, CompanyInfo, PhoneInfo, EmailInfo, connect_to_db
 from flask_cors import CORS
-from cardScanner import scan_card
+from card_scanner import scan_card
 import json
 import jwt
 import datetime
@@ -16,14 +16,14 @@ CORS(app)
 app.secret_key = "thisisasecretkey"
 
 
-
-# TO DO: remember to update code
 base_api_url = '/api/v1'
 
 def token_required(f):
+    """This function verifies auth token received from header in request and 
+       allows only autherized user to access secure routes."""
     @wraps(f)
     def decorated(*args, **kwargs):
-        # print('------------------------',request)
+        
         token = request.headers['Authorization']
         if 'Bearer' in token:
             #  Remove Bearer from string
@@ -40,6 +40,7 @@ def token_required(f):
 
 
 def get_user_id():
+    """This function decodes auth token from header in request and returns user id from decoded token."""
     token = request.headers['Authorization']
     token = token[7:]
     data = jwt.decode(token,app.secret_key)
@@ -48,6 +49,8 @@ def get_user_id():
 
 @app.route(f'{base_api_url}/login', methods = ['Post'])
 def log_in():
+    """This route view recieves username and password using Post method, authenticates user and return json response whith auth token for 
+       for autherized user."""
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -61,7 +64,7 @@ def log_in():
         name = f'{user.first_name} {user.last_name}'
         res = jsonify({"token": token.decode('UTF-8'),
                        "name": name,
-                       "message": 'successfully logged in.', 
+                       "message": 'Successful login', 
                        "status": 200 })
 
         return res
@@ -71,6 +74,7 @@ def log_in():
 
 @app.route(f'{base_api_url}/signup', methods = ['Post'])
 def new_user():
+    """This route view recieves user information using Post method and provides sign up feature."""
     data = request.get_json()
     fname = data.get('fname')
     lname = data.get('lname')
@@ -80,7 +84,7 @@ def new_user():
     phone = data.get('phone')
     
     user = User.query.filter((User.username==username) | (User.email_id==email)).first()
-    # print(user)
+ 
     if user is None:
         db.session.add(User(first_name=fname,
                             last_name=lname,
@@ -89,36 +93,39 @@ def new_user():
                             email_id=email,
                             phone_number=phone))
         db.session.commit()
-        # TO DO: jsonify
-        return jsonify({ "message": 'user successfully added.', "status": 200 })
+
+        return jsonify({ "message": 'user has been added successfully.', "status": 200 })
 
     else:
-        return jsonify({ "message": 'user is not successfully added.', "status": 500 })
+        return jsonify({ "message": 'user is not added successfully.', "status": 400 })
+
 
 @app.route(f'{base_api_url}/getCardData', methods = ['Get'])
 @token_required
 def get_cards():
+    """This route view sends all cards belong to logged in user in json response"""
     
     user_id = get_user_id()
-    cards = Card.query.filter(Card.user_id == user_id).all()
+    cards = Card.query.filter(Card.user_id == user_id).order_by(Card.first_name.asc()).all()
     
-    # print(cards)
     if cards is not None:
         card_info = []
         company_set=set()
+
         for card in cards:
             company_set.add(card.company.company_name)
-            card_info.append({"id":card.card_id, "name":card.first_name+" "+card.last_name})
-        return jsonify({"cards":card_info,"comapny_list":list(company_set), "message":"successfully fetched all cards.","status":200})
+            card_info.append({"id":card.card_id, "name":f'{card.first_name} {card.last_name}'})
+        return jsonify({"cards":card_info,"company_list":list(company_set), "message":"successfully fetched all cards.","status":200})
     else:
-        return jsonify({"message":"There is no card record stored by this user.","status":500})
+        return jsonify({"message":"There is no card record stored by this user.","status":400})
 
 
-@app.route(f'{base_api_url}/searchByCompany/<companyName>')
+@app.route(f'{base_api_url}/searchByCompany/<company_name>')
 @token_required
-def search_By_Name(companyName):
-    company = Company_info.query.filter(Company_info.company_name == companyName).first()
-    # print(company)
+def search_by_name(company_name):
+    """This route view recieves company name as path params and return all cards belongs to that company of logged in user in json response."""
+    company = CompanyInfo.query.filter(CompanyInfo.company_name == company_name).first()
+   
     cards = Card.query.filter(Card.company_id==company.company_id, Card.user_id==get_user_id()).all()
     card_info = []
     for card in cards:
@@ -129,6 +136,7 @@ def search_By_Name(companyName):
 @app.route(f'{base_api_url}/userProfile')
 @token_required
 def user_profile():
+    """This route view returns logged in user information in json response."""
     user = User.query.get(get_user_id())
     return jsonify({"info":{"fname":user.first_name, "lname":user.last_name,"phone":user.phone_number,"email":user.email_id}, "status": 200})
 
@@ -136,6 +144,8 @@ def user_profile():
 @app.route(f'{base_api_url}/setUserProfile', methods = ['Post'])
 @token_required
 def set_User_Profile():
+    """This route view recieves logged in user's updated information using Post method and update user's record in database and sends 
+       json response."""
     profile = request.get_json()
     user_id = get_user_id()
     fname = profile.get('fname')
@@ -158,10 +168,11 @@ def set_User_Profile():
 @app.route(f'{base_api_url}/showCardData/<card_id>')
 @token_required
 def show_card(card_id):
+    """This route view recieves card id as path params and returns card information for recieved card id as json response."""
     card = Card.query.get(card_id)
-    # print(card)
-    phones = Phone_info.query.filter(Phone_info.card_id==card_id).all()
-    emails = Email_info.query.filter(Email_info.card_id==card_id).all()
+
+    phones = PhoneInfo.query.filter(PhoneInfo.card_id==card_id).all()
+    emails = EmailInfo.query.filter(EmailInfo.card_id==card_id).all()
     phone_list = []
     email_list = []
     for phone in phones:
@@ -182,6 +193,7 @@ def show_card(card_id):
 @app.route(f'{base_api_url}/updateCard', methods = ['Post'])
 @token_required
 def update_card():
+    """This route view recieves card information using Post method, updates the card record in database and return json response."""
     card_data = request.get_json()
     card_id = card_data.get('card_id')
     fname = card_data.get('fname')
@@ -190,10 +202,10 @@ def update_card():
     phones = card_data.get('phones')
     jobTitle = card_data.get('jobTitle')
     company = card_data.get('companyName')
-    discription = card_data.get('description')
+    description = card_data.get('description')
 
     card = Card.query.get(card_id)
-    company_obj = Company_info.query.filter(Company_info.company_name == company).first()
+    company_obj = CompanyInfo.query.filter(CompanyInfo.company_name == company).first()
     phone_obj = card.phones
     email_obj = card.email
 
@@ -203,21 +215,21 @@ def update_card():
     card.first_name = fname
     card.last_name = lname
     card.job_title = jobTitle
-    card.discription = discription
+    card.discription = description
     card.company_id = company_obj.company_id
 
     db.session.add(card)
     db.session.commit()
 
     for phone in phones:
-        # print('--------------------------'+str(phone['phone_id']))
-        phone_obj = Phone_info.query.get(phone['phone_id'])
+      
+        phone_obj = PhoneInfo.query.get(phone['phone_id'])
         phone_obj.phone_number = phone['phone_num']
         db.session.add(phone_obj)
         db.session.commit()
 
     for email in emails:
-        email_obj = Email_info.query.get(email['id'])
+        email_obj = EmailInfo.query.get(email['id'])
         email_obj.email_id = email['email_id']
         db.session.add(email_obj)
         db.session.commit()
@@ -226,7 +238,8 @@ def update_card():
 
 @app.route(f'{base_api_url}/deleteCard', methods = ['Post'])
 @token_required
-def delete_Card():
+def delete_card():
+    """This route view recieves card id using Post method and deletes card record from database using card id and return json response."""
     formData = request.get_json()
     card_id = formData.get('card_id')
 
@@ -234,11 +247,11 @@ def delete_Card():
 
     cards = Card.query.filter(Card.company_id == card.company_id).all()
 
-    card.deleteCard()
+    card.remove_card()
     
     
     if cards is None:
-        company = Company_info.query.get(company_id)
+        company = CompanyInfo.query.get(company_id)
         db.session.delete(company)
         
     db.session.commit()
@@ -249,6 +262,7 @@ def delete_Card():
 @app.route(f'{base_api_url}/updatePassword', methods = ['Post'])
 @token_required
 def update_password():
+    """This route view updates user's password and returns json response."""
     update_details = request.get_json()
     username = update_details.get('username')
     old_password = update_details.get('oldPassword')
@@ -268,16 +282,15 @@ def update_password():
 
 @app.route(f'{base_api_url}/scanCard', methods = ['Post'])
 @token_required
-def scan_Card():
+def process_card():
+    """This route view recieves image file from user, uploads in server, extract all card information from image and send it as json response."""
     image_File = request.files['file']
-    # print(request.files['file'].filename)
     
     filename = secure_filename(image_File.filename)
-    # print(os.path.join(os.path.dirname(__file__),app.config['UPLOAD_FOLDER'], filename))
+
     image_File.save(os.path.join(os.path.dirname(__file__),app.config['UPLOAD_FOLDER'], filename))
     data = scan_card(filename)
-    print('-----------------------------------------------------')
-    # print(data)
+
     phone_list = []
     email_list = []
 
@@ -285,17 +298,19 @@ def scan_Card():
         phone_list.append({"phone_id":"p"+str(index), "phone_num":phone})
     for index,email in enumerate(data['emails']):
         email_list.append({"id":"e"+str(index), "email_id":email})
-    print(data)
+   
     return jsonify({"data":{'name':data['name'],
                             'phones':phone_list,
                             'emails':email_list,
-                            'jobTitle':data['jobTitle']},
+                            'jobTitle':data['jobTitle'],
+                            'company':data['company']},
                     "message":"Data is fetched successfully.","status":200})
 
 
 @app.route(f'{base_api_url}/saveNewCard',methods=['Post'])
 @token_required
 def save_new_card():
+    """This route view recieves card information using Post method, stores it in database and returns json response"""
     newCard = request.get_json()
 
     user_id = get_user_id()
@@ -306,15 +321,13 @@ def save_new_card():
     jobTitle = newCard.get('jobTitle')
     company = newCard.get('company')
     description = newCard.get('description')
-    # print(newCard)
 
-    isCompany = Company_info.query.filter(Company_info.company_name == company).first()
+    isCompany = CompanyInfo.query.filter(CompanyInfo.company_name == company).first()
     if isCompany is None:
-        c_id = db.session.add(Company_info(company_name = company))
+        c_id = db.session.add(CompanyInfo(company_name = company))
         db.session.commit()
-        # print(c_id)
     
-    company_data = Company_info.query.filter(Company_info.company_name == company).first()
+    company_data = CompanyInfo.query.filter(CompanyInfo.company_name == company).first()
 
     db.session.add(Card(user_id = user_id,
                         first_name = fname,
@@ -327,11 +340,11 @@ def save_new_card():
     card = Card.query.filter(Card.user_id == user_id).order_by(Card.card_id.desc()).first()
 
     for phone in phone_list:
-        db.session.add(Phone_info(card_id = card.card_id,
+        db.session.add(PhoneInfo(card_id = card.card_id,
                                   phone_number = phone['phone_num']))
 
     for email in email_list:
-        db.session.add(Email_info(card_id = card.card_id,
+        db.session.add(EmailInfo(card_id = card.card_id,
                                   email_id = email['email_id']))
 
     db.session.commit()
@@ -345,8 +358,6 @@ def save_new_card():
     #                     from_='+12066732998',
     #                     to='+12139521102'
     #                 )
-
-    # print(message.sid)
     return jsonify({'message': 'Success','status':200})
 
 

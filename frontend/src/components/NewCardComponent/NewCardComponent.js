@@ -45,6 +45,7 @@ export default class NewCardComponent extends Component{
 				phone_number: response.data.phones,
 				email_id: response.data.emails,
 				jobTitle: response.data.jobTitle,
+				company: response.data.company,
 				newCard: true,
 				loading: false
 
@@ -116,7 +117,7 @@ export default class NewCardComponent extends Component{
 	
 				})
 				if(!confirm('Do you want to add more cards?')){
-					window.location.href = '/userPage'
+					window.location.href = '/#/userPage'
 				}
 			}
 		}
@@ -160,7 +161,7 @@ export default class NewCardComponent extends Component{
 									
 							</section>
 							<section>
-								<span>Phone number:</span>
+								<span>Phone number</span>
 								{(this.state.phone_number.length>0)?
 										this.state.phone_number.map(phone =>{
 											// console.log(phone.phone_id)
@@ -172,7 +173,7 @@ export default class NewCardComponent extends Component{
 								<br/>
 							</section>
 							<section>
-							<span>Email id:</span>
+							<span>Email id</span>
 								{(this.state.email_id.length > 0)?
 										this.state.email_id.map(email =>{
 											// console.log(email.id)
@@ -184,17 +185,17 @@ export default class NewCardComponent extends Component{
 								<br/>
 							</section>
 							<section>
-								<span>Job title:</span>
+								<span>Job title</span>
 								<input type = 'text' value={this.state.jobTitle} name='jobTitle' 
 										onChange={(evt) => {this.handleChange('jobTitle',evt.target.value)}}/><br/>
 							</section>
 							<section>
-								<span>Company Name:</span>
+								<span>Company Name</span>
 								<input type = 'text' value={this.state.company} name='company' 
 										onChange={(evt) => {this.handleChange('company',evt.target.value)}}/><br/>
 							</section>
 							<section >
-								<span>Description:</span>
+								<span>Description</span>
 								<textarea 
 									type="text" 
 									value={this.state.description} 

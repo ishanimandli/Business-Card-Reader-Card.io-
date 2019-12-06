@@ -55,8 +55,31 @@ ReactModal{
 }
 #no-padding-bottom button{
     border:none;
+    &:hover{
+        background: none;
+    }
 }
 ReactModal.button:hover{
     background: white;
     color: #6b6b6d;
+}
+.cross{
+    position: absolute;
+    right: 30px;
+    font-size: 18px;
+    text-align: center;
+    border: 1px solid #aba8a8;
+    border-radius: 50%;
+    /* width: 23px; */
+    cursor: pointer;
+    padding: 1px 7px;
+    /* height: 23px; */
+    background: none;
+}
+
+.delete-btn{
+    &:hover{
+        background: #e43e3e;
+        border-color: #e43e3e
+    }
 }

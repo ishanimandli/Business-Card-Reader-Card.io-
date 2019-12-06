@@ -39,13 +39,9 @@ export default class UserPageComponent extends Component{
 			window.location.href='/'
 		}
 		if(response.status === 200){
-
+			console.log(response.data)
 			this.setState({
-				listOfcards: response.data.sort(function(a,b){
-									if(a.name < b.name) { return -1; }
-									if(a.name > b.name) { return 1; }
-									return 0;
-								}),
+				listOfcards: response.data,
 				company_list: response.company_list.sort()
 			})
 			// console.log(response.company_list)
@@ -157,14 +153,23 @@ export default class UserPageComponent extends Component{
 					<div className="login-page">
 						<div className="form">
 							<div id='no-border-div' className='upload-div '>
-								<div className='new-card-btn'>
-									<button 
+							<div className='new-card-btn'>
+									<span className='contacts-heading'>Contacts</span>
+									<span className='add-new-card'
 											onClick={(evt) => {this.handleNewClick(evt)}}>
-													New Card
-									</button>
+													+ Add Card
+									</span>
 								</div>
 							
 								<div className='search-bar'>
+									
+									{(this.state.searchBy) ? 
+											<input type='text' value={this.state.searchName} 
+											placeholder='Search'
+											onChange={(evt) => this.handleSearchNameChange(evt)}/> : 
+											
+											this.showCompanyList()
+									}
 									<select className='company-search' onChange={(evt) =>{ this.handleSearchBy(evt)}} defaultValue='name'>
 										<option key='name'>
 												By Name
@@ -173,19 +178,12 @@ export default class UserPageComponent extends Component{
 												By Company
 										</option>
 									</select>
-									{(this.state.searchBy) ? 
-											<input type='text' value={this.state.searchName} 
-											placeholder='Search'
-											onChange={(evt) => this.handleSearchNameChange(evt)}/> : 
-											
-											this.showCompanyList()
-									}
 									
-									
-									<button onClick={(evt) => {this.handleCancelClick(evt)}}>Cancel</button>
+									{/* <button onClick={(evt) => {this.handleCancelClick(evt)}}>Cancel</button> */}
 								</div>
+								
 								<div className='card-container'>
-									<h1 className='card-header-div'>Cards</h1>
+									{/* <h1 className='card-header-div'>Cards</h1> */}
 									<ul className='card-list-container'>
 									{(this.state.listOfcards
 										.filter(card => card.name.toLowerCase().includes(this.state.searchName))
