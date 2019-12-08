@@ -113,3 +113,13 @@ export async function saveNewCard(formData){
                                                 });
     return {message: response.data.message, status: response.data.status}
 }
+
+export async function shareInfo(cardId){
+    const PATH = baseUrl + '/shareInfo'
+    const response = await axios.post(PATH, cardId, {
+                                                        headers: {
+                                                        Authorization: "Bearer " + localStorage.getItem('token')},
+                                                        'Content-Type' : 'multipart/form-data'
+                                                });
+    return {message: response.data.message, status: response.data.status}
+}

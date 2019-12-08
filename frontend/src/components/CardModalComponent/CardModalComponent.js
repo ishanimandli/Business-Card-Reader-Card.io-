@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getCard,updateCard,deleteCard } from '../../services/userService'
+import { getCard,updateCard,deleteCard,shareInfo } from '../../services/userService'
 import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
 import ReactModal from 'react-modal'
@@ -37,7 +37,7 @@ export default class CardModal extends Component{
     async showCardData(){
         console.log(this.props.showCardModal)
         if(this.props.showCardModal){
-            console.log(this.props.card_id)
+            // console.log(this.props.card_id)
             const response = await getCard(this.state.card_id)
             if(response.status == 403){
                 window.location.href='/'
@@ -124,6 +124,15 @@ export default class CardModal extends Component{
         }
         
     }
+    async handleShareInfoClick(evt){
+        if(evt){
+            const { card_id } = this.state
+            const response = await shareInfo({ card_id })
+            if(response.status === 200){
+                alert(response.message)
+            }
+        }
+    }
     render(){
         // const { fname, lname } = this.state.cardData;
         return (
@@ -190,6 +199,7 @@ export default class CardModal extends Component{
                                                 onClick={(evt) => {this.handleUpdateData(evt)}}>
                                                     Update
                                         </button>
+                                        <button onClick={(evt) => {this.handleShareInfoClick(evt)}}>Share my Info</button>
                                         <button className="delete-btn" onClick={(evt) =>{ 
                                                         if (window.confirm('Are you sure you wish to delete this item?')) 
                                                         this.handleDeleteCard(evt)}}>

@@ -352,15 +352,33 @@ def save_new_card():
     # 
     # client = Client(account_sid, auth_token)
 
-    # message = client.messages \
-    #                 .create(
-    #                     body=f'{fname} {lname} has been added successfully.',
-    #                     from_='+12066732998',
-    #                     to='+12139521102'
-    #                 )
+    message = client.messages \
+                    .create(
+                        body=f'{fname} {lname} has been added successfully.',
+                        from_='+12066732998',
+                        to='+12139521102'
+                    )
     return jsonify({'message': 'Success','status':200})
 
 
+@app.route(f'{base_api_url}/shareInfo', methods= ['Post'])
+@token_required
+def share_info():
+    user_id = get_user_id()
+    data = request.get_json()
+    card_id = data.get('card_id')
+
+    phone_num = PhoneInfo.query.filter(PhoneInfo.card_id == card_id).first()
+    user = User.query.get(user_id)
+
+    # client = Client(account_sid, auth_token)
+    # message = client.messages \
+    #                 .create(
+    #                     body=f'Name: {user.first_name} {user.last_name} Phone number: {user.phone_number} Email id: {user.email_id}.',
+    #                     from_='+12066732998',
+    #                     to='+12139521102'
+    #                 )
+    return jsonify({'message':'Your infomation has been shared successfuly.', 'status':200})
 
 
 if __name__ == "__main__":

@@ -36,6 +36,8 @@ export default class UserPageComponent extends Component{
 		const response = await getCardData()
 		// console.log(response)
 		if(response.status == 403){
+			event.preventDefault()
+			localStorage.clear()
 			window.location.href='/'
 		}
 		if(response.status === 200){
